@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop | Sanctuary Scents</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: #faf8f5;
+            color: #333;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(198, 185, 164, 0.95);
+            padding: 0 2rem 0 4rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .navbar.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-image {
+            height: 140px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #654321;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #4a2c0f;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #654321;
+            border: 2px solid #654321;
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: #654321;
+            color: #f5f5dc;
+        }
+
+        .icon-basket {
+            width: 44px;
+            height: 44px;
+            margin-right: 0.25rem;
+            background-image: url('perfumes/shopping basket.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            filter: sepia(1) saturate(4) hue-rotate(350deg) brightness(0.6);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 120px;
+        }
+
+        /* Filters and Categories */
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            background: #654321;
+            color: white;
+            border-color: #654321;
+        }
+
+        .filter-btn:hover {
+            border-color: #654321;
+            color: #654321;
+        }
+
+        .sort-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            font-size: 1rem;
+        }
+
+
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-image.smaller {
+            height: 250px;
+            background-size: contain;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(139, 69, 19, 0.2);
+        }
+
+        .product-info {
+            padding: 2rem;
+        }
+
+        .product-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            color: #8B4513;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .product-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            background: #654321;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #4a2c0f;
+            transform: translateY(-2px);
+        }
+
+        /* WhatsApp button + chat text (uniform with home) */
+        .chat-text {
+            position: fixed;
+            right: 30px;
+            bottom: 110px;
+            background: #ffffff;
+            color: #654321;
+            padding: 0.5rem 0.75rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            background: #25d366;
+        }
+
+        .floating-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-icon {
+            width: 28px;
+            height: 28px;
+            background-image: url('perfumes/whatsapp icon.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Expanded Product Modal */
+        .expanded-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .expanded-modal.active {
+            display: block;
+        }
+
+        .expanded-modal-content {
+            background: white;
+            max-width: 1200px;
+            width: 90%;
+            margin: 2rem auto;
+            border-radius: 20px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .expanded-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #654321;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: background 0.3s ease;
+        }
+
+        .expanded-modal-close:hover {
+            background: #4a2c0f;
+        }
+
+        .expanded-product-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding: 3rem;
+        }
+
+        .expanded-product-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .expanded-product-image img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 15px;
+        }
+
+        .expanded-product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .expanded-product-header h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin: 0 0 0.5rem;
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .expanded-product-header p {
+            font-size: 1.2rem;
+            color: #654321;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .expanded-product-description p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #666;
+            margin: 0;
+        }
+
+        .expanded-product-notes h4 {
+            font-size: 1.3rem;
+            color: #333;
+            margin: 0 0 1rem;
+        }
+
+        .notes-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .accordion-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: #f8f8f8;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .accordion-header:hover {
+            background: #f0f0f0;
+        }
+
+        .accordion-content {
+            padding: 1rem;
+            background: white;
+            display: none;
+        }
+
+        .accordion-content.active {
+            display: block;
+        }
+
+        .accordion-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-icon {
+            transform: rotate(45deg);
+        }
+
+        .note-tag {
+            display: inline-block;
+            background: #f8f6f3;
+            color: #654321;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(101, 67, 33, 0.2);
+        }
+
+        .expanded-product-price {
+            font-size: 2rem;
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .expanded-product-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .add-to-cart-expanded {
+            background: #654321;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart-expanded:hover {
+            background: #4a2c0f;
+            transform: translateY(-2px);
+        }
+
+        .pay-with-airtel {
+            background: #E31837;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pay-with-airtel:hover {
+            background: #C41230;
+            transform: translateY(-2px);
+        }
+
+        .pay-with-airtel img {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .more-payment-options {
+            text-align: center;
+            color: #654321;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .more-payment-options:hover {
+            color: #4a2c0f;
+            text-decoration: underline;
+        }
+
+        .you-may-also-like {
+            padding: 2rem 3rem 3rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .you-may-also-like h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 0 0 1.5rem;
+            text-align: center;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .recommendation-image {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .recommendation-info {
+            padding: 1rem;
+        }
+
+        .recommendation-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 0.5rem;
+        }
+
+        .recommendation-price {
+            font-size: 1.1rem;
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        /* Footer (from Sanctuary1) */
+        .footer {
+            background: #333;
+            color: #f5f5dc;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(139, 69, 19, 0.2);
+            margin-top: 3rem;
+        }
+
+        .footer .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-left p {
+            margin: 0.25rem 0;
+        }
+
+        .footer-left .tagline {
+            opacity: 0.9;
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        .footer-right .social-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .expanded-product-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem;
+            }
+
+            .expanded-product-header h2 {
+                font-size: 2rem;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        /* Featured Section */
+        .products {
+            padding: 6rem 2rem;
+            background: #f5f5dc;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            color: #333;
+            font-weight: 300;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background: #654321;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .newsletter h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .newsletter p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 400px;
+            margin: 0 auto;
+            gap: 1rem;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .newsletter-btn {
+            background: white;
+            color: #654321;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .shop-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filters {
+                justify-content: center;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+
+        /* Floating WhatsApp Button */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25d366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-icon {
+            width: 30px;
+            height: 30px;
+            background-image: url('perfumes/whatsapp icon.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .chat-text {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: white;
+            color: #654321;
+            padding: 0.75rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: opacity 1.5s ease;
+            z-index: 1000;
+        }
+
+        .chat-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            right: 20px;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #654321;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: background 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: #4a2c0f;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #999;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-content {
+            padding: 2rem;
+        }
+
+        .modal-brand {
+            color: #654321;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 1rem;
+        }
+
+        .modal-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-notes {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-notes h4 {
+            color: #654321;
+            font-size: 1.1rem;
+            margin: 0 0 0.75rem;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .note-item {
+            background: #f8f6f3;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #654321;
+            font-weight: 500;
+        }
+
+        .modal-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #654321;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-add-to-cart {
+            flex: 1;
+            background: #654321;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal-add-to-cart:hover {
+            background: #4a2c0f;
+        }
+
+        .modal-wishlist {
+            background: transparent;
+            color: #654321;
+            border: 2px solid #654321;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-wishlist:hover {
+            background: #654321;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="Sanctuary1.html" class="logo">
+                <img src="perfumes/sanctuary scents logo transparent.png" alt="Sanctuary Scents" class="logo-image">
+            </a>
+            <ul class="nav-links">
+                <li><a href="Sanctuary1.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            <div class="nav-actions">
+                <span class="icon-basket" aria-hidden="true"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Shop Header -->
+        <div class="shop-header">
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="masculine">Masculine</button>
+                <button class="filter-btn" data-filter="feminine">Feminine</button>
+                <button class="filter-btn" data-filter="unisex">Unisex</button>
+                <button class="filter-btn" data-filter="new">New Arrivals</button>
+                <button class="filter-btn" data-filter="bestsellers">Bestsellers</button>
+            </div>
+            <select class="sort-select">
+                <option>Sort by: Featured</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+                <option>Newest First</option>
+                <option>Most Popular</option>
+            </select>
+        </div>
+
+
+
+        <!-- Featured Products -->
+        <section class="products">
+            <div class="container">
+                <h2 class="section-title">Featured Fragrances</h2>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('perfumes/Lattafa nebras box.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Lattafa Nebras</h3>
+                            <p>A sophisticated oriental fragrance featuring notes of vanilla, amber, and sandalwood.
+                                Perfect for evening wear with its warm, sensual character.</p>
+                            <p class="product-price">UGX 135,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image smaller"
+                            style="background-image: url('perfumes/Lattafa Eclaire box.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Lattafa Eclaire</h3>
+                            <p>An elegant blend of bergamot, jasmine, and white musk. This fresh and modern fragrance
+                                offers a clean, sophisticated scent perfect for daily wear.</p>
+                            <p class="product-price">UGX 145,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image smaller"
+                            style="background-image: url('perfumes/club de nuit  intense man box.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Club de Nuit Intense Man</h3>
+                            <p>A powerful masculine fragrance with notes of black currant, bergamot, and birch. Features
+                                a distinctive smoky leather accord that's bold and unforgettable.</p>
+                            <p class="product-price">UGX 165,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image"
+                            style="background-image: url('perfumes/club de nuit maleka bottle.jpg');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Club de Nuit Maleka</h3>
+                            <p>An elegant and refined fragrance for the sophisticated woman. Features delicate floral
+                                notes with a modern twist, perfect for both day and evening wear.</p>
+                            <p class="product-price">UGX 165,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('perfumes/Lattafa atlas.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Lattafa Atlas</h3>
+                            <p>A unique and sophisticated fragrance with distinctive character. Combines oriental and
+                                woody notes for a memorable scent that stands out.</p>
+                            <p class="product-price">UGX 150,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('perfumes/musouf pink.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Mousuf Pink</h3>
+                            <p>A delicate and feminine fragrance with soft, romantic notes. Perfect for daily wear with
+                                its gentle, uplifting character that brings joy and elegance.</p>
+                            <p class="product-price">UGX 100,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('perfumes/mosouf brown.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Mousuf Brown</h3>
+                            <p>A rich and sophisticated masculine fragrance with deep, warm notes. Ideal for evening
+                                wear and special occasions with its commanding presence.</p>
+                            <p class="product-price">UGX 100,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image"
+                            style="background-image: url('perfumes/club de nuit woman box.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Club de Nuit Woman</h3>
+                            <p>A sophisticated and alluring fragrance for the modern woman. Combines classic elegance
+                                with contemporary appeal for a timeless scent.</p>
+                            <p class="product-price">UGX 165,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image"
+                            style="background-image: url('perfumes/club de nuit imperiale box.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Club de Nuit Imperiale</h3>
+                            <p>A regal and commanding fragrance with imperial elegance. Perfect for those who appreciate
+                                luxury and sophistication with its noble character.</p>
+                            <p class="product-price">UGX 170,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('perfumes/afnan 9pm rebel box.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Afnan 9PM Rebel</h3>
+                            <p>A bold and rebellious fragrance with intense character and deep notes. Perfect for those
+                                who want to make a statement with their scent.</p>
+                            <p class="product-price">UGX 185,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('perfumes/Afnan 9pm box.jpg');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Afnan 9PM</h3>
+                            <p>A sophisticated evening fragrance with deep, rich notes for special occasions. Elegant
+                                and timeless with its refined character.</p>
+                            <p class="product-price">UGX 150,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('perfumes/Lattafa yara box.webp');">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title">Lattafa Yara</h3>
+                            <p>A delicate and feminine fragrance with floral elegance and grace. Perfect for daily wear
+                                with its soft, romantic character.</p>
+                            <p class="product-price">UGX 120,000</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Floating WhatsApp (uniform with home) -->
+        <div class="chat-text" id="chatText">Chat with us</div>
+        <div class="floating-whatsapp" id="whatsappButton">
+            <div class="whatsapp-icon"></div>
+        </div>
+
+        <!-- Expanded Product Modal -->
+        <div id="expandedModal" class="expanded-modal">
+            <div class="expanded-modal-content">
+                <button class="expanded-modal-close" id="expandedModalClose">&times;</button>
+                <div class="expanded-product-layout">
+                    <div class="expanded-product-image">
+                        <img id="expandedProductImage" src="" alt="Product Image">
+                    </div>
+                    <div class="expanded-product-details">
+                        <div class="expanded-product-header">
+                            <h2 id="expandedProductTitle">Product Title</h2>
+                            <p id="expandedProductBrand">Brand</p>
+                        </div>
+                        <div class="expanded-product-description">
+                            <p id="expandedProductDescription">Product description goes here.</p>
+                        </div>
+                        <div class="expanded-product-notes">
+                            <h4>Fragrance Notes</h4>
+                            <div class="notes-accordion">
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Top Notes</span>
+                                        <span class="accordion-icon">+</span>
+                                    </div>
+                                    <div class="accordion-content" id="topNotes"></div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Heart Notes</span>
+                                        <span class="accordion-icon">+</span>
+                                    </div>
+                                    <div class="accordion-content" id="heartNotes"></div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Base Notes</span>
+                                        <span class="accordion-icon">+</span>
+                                    </div>
+                                    <div class="accordion-content" id="baseNotes"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="expanded-product-price">
+                            <span id="expandedProductPrice">UGX 0</span>
+                        </div>
+                        <div class="expanded-product-actions">
+                            <button class="add-to-cart-expanded">Add to Cart</button>
+                            <button class="pay-with-airtel">
+                                <img src="perfumes/airtel.jpeg" alt="Airtel Money">
+                                Pay with Airtel Money
+                            </button>
+                            <a href="checkout.html" class="more-payment-options">More Payment Options</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="you-may-also-like">
+                    <h3>You May Also Like</h3>
+                    <div class="recommendations-grid" id="recommendationsGrid">
+                        <!-- Recommendations will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter -->
+        <section class="newsletter">
+            <h3>Stay in the Loop</h3>
+            <p>Get exclusive access to new arrivals, special offers, and fragrance tips.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer (uniform) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <p>&copy; 2024 Sanctuary Scents. All rights reserved.</p>
+                    <p class="tagline">"spray responsibly" - side effects may include obsession!</p>
+                </div>
+                <div class="footer-right">
+                    <div class="social-item"><span style="font-size: 1.2rem;">👻</span><span>sanctuaryscents</span>
+                    </div>
+                    <div class="social-item"><span style="font-size: 1.2rem;">📷</span><span>sanctuary_scents_ug</span>
+                    </div>
+                    <div class="social-item"><span style="font-size: 1.2rem;">📞</span><span>+256 753 610142</span>
+                    </div>
+                    <div class="social-item"><span style="font-size: 1.2rem;">📞</span><span>+254 797 735859</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-image" id="modalImage">🧴</div>
+            <div class="modal-content">
+                <div class="modal-brand" id="modalBrand">Brand</div>
+                <h2 class="modal-title" id="modalTitle">Product Title</h2>
+                <p class="modal-description" id="modalDescription">Product description goes here.</p>
+
+                <div class="modal-notes">
+                    <h4>Fragrance Notes</h4>
+                    <div class="notes-grid" id="modalNotes">
+                        <!-- Notes will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="modal-price" id="modalPrice">UGX 0</div>
+
+                <div class="modal-actions">
+                    <button class="modal-add-to-cart" id="modalAddToCart">Add to Cart</button>
+                    <button class="modal-wishlist">Add to Wishlist</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <div class="chat-text" id="chatText">Chat with us</div>
+    <div class="floating-whatsapp" id="whatsappButton" onclick="window.open('https://wa.me/256753610142', '_blank')">
+        <div class="whatsapp-icon"></div>
+    </div>
+
+    <script>
+        // Navbar hide/show on scroll
+        let lastScrollTop = 0;
+        const navbar = document.getElementById('navbar');
+        const scrollThreshold = 100;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
+                navbar.classList.add('hidden');
+            } else {
+                navbar.classList.remove('hidden');
+            }
+
+            lastScrollTop = currentScrollTop;
+        });
+
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const productCards = document.querySelectorAll('.product-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                const filter = button.getAttribute('data-filter');
+
+                productCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Product data with detailed information
+        const staticProductData = {
+            'Lattafa Nebras': {
+                brand: 'Lattafa',
+                description: 'A sophisticated oriental fragrance featuring notes of vanilla, amber, and sandalwood. Perfect for evening wear with its warm, sensual character that creates an aura of mystery and elegance.',
+                topNotes: ['Vanilla', 'Amber', 'Sandalwood'],
+                heartNotes: ['Musk', 'Patchouli'],
+                baseNotes: ['Tonka Bean', 'Oriental Notes'],
+                price: 'UGX 135,000'
+            },
+            'Lattafa Eclaire': {
+                brand: 'Lattafa',
+                description: 'An elegant blend of bergamot, jasmine, and white musk. This fresh and modern fragrance offers a clean, sophisticated scent perfect for daily wear.',
+                topNotes: ['Bergamot', 'Jasmine'],
+                heartNotes: ['White Musk', 'Lily of the Valley'],
+                baseNotes: ['Peony', 'Cedar'],
+                price: 'UGX 145,000'
+            },
+            'Club de Nuit Intense Man': {
+                brand: 'Club de Nuit',
+                description: 'A powerful masculine fragrance with notes of black currant, bergamot, and birch. Features a distinctive smoky leather accord that\'s bold and unforgettable.',
+                topNotes: ['Pineapple', 'Pink Pepper', 'Black Pepper', 'Lime', 'Lemon', 'Bergamot'],
+                heartNotes: ['Rose', 'Lily of the Valley', 'Freesia', 'Jasmine'],
+                baseNotes: ['Leather', 'Cedarwood', 'Patchouli', 'Ambergris', 'White Musk', 'Ambroxan'],
+                price: 'UGX 165,000'
+            },
+            'Club de Nuit Maleka': {
+                brand: 'Club de Nuit',
+                description: 'An elegant and refined fragrance for the sophisticated woman. Features delicate floral notes with a modern twist, perfect for both day and evening wear.',
+                topNotes: ['Bergamot', 'Pink Pepper', 'Lemon'],
+                heartNotes: ['Rose', 'Jasmine', 'Peony', 'Freesia'],
+                baseNotes: ['White Musk', 'Amber', 'Vanilla', 'Sandalwood'],
+                price: 'UGX 165,000'
+            },
+            'Lattafa Atlas': {
+                brand: 'Lattafa',
+                description: 'A unique and sophisticated fragrance with distinctive character. Combines oriental and woody notes for a memorable scent that stands out.',
+                topNotes: ['Bergamot', 'Saffron', 'Pink Pepper'],
+                heartNotes: ['Oud', 'Amber', 'Rose'],
+                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
+                price: 'UGX 150,000'
+            },
+            'Mousuf Pink': {
+                brand: 'Mousuf',
+                description: 'A delicate and feminine fragrance with soft, romantic notes. Perfect for daily wear with its gentle, uplifting character that brings joy and elegance.',
+                topNotes: ['Peach', 'Strawberry', 'Bergamot'],
+                heartNotes: ['Rose', 'Jasmine', 'Peony'],
+                baseNotes: ['Vanilla', 'White Musk', 'Sandalwood'],
+                price: 'UGX 100,000'
+            },
+            'Mousuf Brown': {
+                brand: 'Mousuf',
+                description: 'A rich and sophisticated masculine fragrance with deep, warm notes. Ideal for evening wear and special occasions with its commanding presence.',
+                topNotes: ['Bergamot', 'Lavender', 'Pink Pepper'],
+                heartNotes: ['Amber', 'Vanilla', 'Rose'],
+                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
+                price: 'UGX 100,000'
+            },
+            'Club de Nuit Woman': {
+                brand: 'Club de Nuit',
+                description: 'A sophisticated and alluring fragrance for the modern woman. Combines classic elegance with contemporary appeal for a timeless scent.',
+                topNotes: ['Peach', 'Bergamot', 'Pink Pepper'],
+                heartNotes: ['Rose', 'Jasmine', 'Freesia'],
+                baseNotes: ['Amber', 'Vanilla', 'Musk', 'Sandalwood'],
+                price: 'UGX 165,000'
+            },
+            'Club de Nuit Imperiale': {
+                brand: 'Club de Nuit',
+                description: 'A regal and commanding fragrance with imperial elegance. Perfect for those who appreciate luxury and sophistication with its noble character.',
+                topNotes: ['Bergamot', 'Pink Pepper', 'Lemon'],
+                heartNotes: ['Rose', 'Oud', 'Amber'],
+                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
+                price: 'UGX 170,000'
+            },
+            'Afnan 9PM Rebel': {
+                brand: 'Afnan',
+                description: 'A bold and rebellious fragrance with intense character and deep notes. Perfect for those who want to make a statement with their scent.',
+                topNotes: ['Black Pepper', 'Bergamot', 'Pink Pepper'],
+                heartNotes: ['Lavender', 'Amber', 'Rose'],
+                baseNotes: ['Musk', 'Vanilla', 'Sandalwood'],
+                price: 'UGX 185,000'
+            },
+            'Afnan 9PM': {
+                brand: 'Afnan',
+                description: 'A sophisticated evening fragrance with deep, rich notes for special occasions. Elegant and timeless with its refined character.',
+                topNotes: ['Bergamot', 'Lavender', 'Pink Pepper'],
+                heartNotes: ['Amber', 'Rose', 'Jasmine'],
+                baseNotes: ['Vanilla', 'Musk', 'Sandalwood'],
+                price: 'UGX 150,000'
+            },
+            'Lattafa Yara': {
+                brand: 'Lattafa',
+                description: 'A delicate and feminine fragrance with floral elegance and grace. Perfect for daily wear with its soft, romantic character.',
+                topNotes: ['Peach', 'Strawberry', 'Bergamot'],
+                heartNotes: ['Rose', 'Jasmine', 'Peony'],
+                baseNotes: ['Vanilla', 'Musk', 'Sandalwood'],
+                price: 'UGX 120,000'
+            }
+        };
+
+        // Runtime product data (will be filled from Supabase if available; otherwise fallback to static)
+        let productData = { ...staticProductData };
+
+        // --- Supabase dynamic fetching ---
+        const SUPABASE_URL = 'https://ptnffxklbwkgzbsegtmr.supabase.co';
+        // Replace with your anon/public key from Supabase Project settings → API
+        const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_PUBLIC_KEY';
+        let supabaseClient = null;
+        try { supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null; } catch (_) { supabaseClient = null; }
+
+        async function getPublicUrlFromStorage(path) {
+            // If you stored full public URLs in image_url, just return as-is
+            if (!supabaseClient || !path) return path || '';
+            // If path already looks like full URL, return it
+            if (/^https?:\/\//i.test(path)) return path;
+            // Assume a bucket named 'products' and object path is provided (e.g., images/lattafa-nebras.jpg)
+            const { data } = supabaseClient.storage.from('products').getPublicUrl(path);
+            return data?.publicUrl || path;
+        }
+
+        function toPriceUGX(num) {
+            const n = typeof num === 'number' ? num : parseFloat(num || 0);
+            if (!isFinite(n)) return 'UGX 0';
+            return 'UGX ' + Math.round(n).toLocaleString('en-UG');
+        }
+
+        async function fetchProductsFromSupabase() {
+            if (!supabaseClient) return null;
+            try {
+                const { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+
+                // Transform rows to the shape used in this page
+                const transformed = {};
+                for (const row of data) {
+                    const imageUrl = await getPublicUrlFromStorage(row.image_url);
+                    transformed[row.product_name] = {
+                        brand: row.brand_name,
+                        description: row.description || '',
+                        topNotes: row.top_notes || [],
+                        heartNotes: row.heart_notes || [],
+                        baseNotes: row.base_notes || [],
+                        price: toPriceUGX(row.price),
+                        image: imageUrl
+                    };
+                }
+                return transformed;
+            } catch (e) {
+                console.error('Supabase fetch failed:', e);
+                return null;
+            }
+        }
+
+        function renderGridFromProductData(pd) {
+            const grid = document.querySelector('.products-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            Object.keys(pd).forEach((title) => {
+                const p = pd[title];
+                const imageStyle = p.image ? `background-image: url('${p.image}')` : '';
+                const imageClass = /eclaire|intense man/i.test(title) ? 'product-image smaller' : 'product-image';
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="${imageClass}" style="${imageStyle}"></div>
+                    <div class="product-info">
+                        <h3 class="product-title">${title}</h3>
+                        <p>${p.description}</p>
+                        <p class="product-price">${p.price}</p>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        (async function initDynamicProducts() {
+            const remote = await fetchProductsFromSupabase();
+            if (remote && Object.keys(remote).length) {
+                productData = remote;
+                try { localStorage.setItem('sanctuaryProductData', JSON.stringify(productData)); } catch (_) { }
+                renderGridFromProductData(productData);
+            } else {
+                // keep existing static DOM as-is; still persist for quiz
+                try { localStorage.setItem('sanctuaryProductData', JSON.stringify(staticProductData)); } catch (_) { }
+            }
+        })();
+
+        // Modal functionality
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalClose = document.getElementById('modalClose');
+        const modalImage = document.getElementById('modalImage');
+        const modalBrand = document.getElementById('modalBrand');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalNotes = document.getElementById('modalNotes');
+        const modalPrice = document.getElementById('modalPrice');
+        const modalAddToCart = document.getElementById('modalAddToCart');
+        const whatsappBtnEl = document.getElementById('whatsappButton');
+        const whatsappTextEl = document.getElementById('chatText');
+
+        // Persist product catalog for quiz recommendations
+        try {
+            localStorage.setItem('sanctuaryProductData', JSON.stringify(productData));
+        } catch (_) { }
+
+        // Simple cart persistence
+        function getCartItems() {
+            try { return JSON.parse(localStorage.getItem('cartItems') || '[]'); } catch { return []; }
+        }
+
+        function setCartItems(items) {
+            localStorage.setItem('cartItems', JSON.stringify(items));
+        }
+
+        function parsePriceToInt(priceStr) {
+            // Expect formats like "UGX 135,000"
+            return parseInt(String(priceStr).replace(/[^\d]/g, '')) || 0;
+        }
+
+        function addToCartByTitle(productTitle) {
+            const data = getProductData(productTitle);
+            if (!data) return;
+            const items = getCartItems();
+            const existing = items.find(i => i.title === productTitle);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                items.push({
+                    title: productTitle,
+                    brand: data.brand,
+                    priceUGX: parsePriceToInt(data.price),
+                    image: getProductImage(productTitle),
+                    quantity: 1
+                });
+            }
+            setCartItems(items);
+        }
+
+        // Open expanded modal when product card is clicked
+        productCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Don't open modal if clicking on the add to cart button
+                if (e.target.classList.contains('add-to-cart')) {
+                    // Add to cart from grid card
+                    const productTitle = card.querySelector('.product-title').textContent;
+                    addToCartByTitle(productTitle);
+                    // Optional lightweight feedback
+                    e.target.textContent = 'Added';
+                    setTimeout(() => { e.target.textContent = 'Add to Cart'; }, 1200);
+                    return;
+                }
+
+                const productTitle = card.querySelector('.product-title').textContent;
+                const productData = getProductData(productTitle);
+
+                if (productData) {
+                    // Set expanded modal content
+                    document.getElementById('expandedProductImage').src = getProductImage(productTitle);
+                    document.getElementById('expandedProductTitle').textContent = productTitle;
+                    document.getElementById('expandedProductBrand').textContent = productData.brand;
+                    document.getElementById('expandedProductDescription').textContent = productData.description;
+                    document.getElementById('expandedProductPrice').textContent = productData.price;
+
+                    // Populate fragrance notes
+                    populateFragranceNotes(productData);
+
+                    // Generate recommendations
+                    generateRecommendations(productTitle);
+
+                    // Show expanded modal
+                    document.getElementById('expandedModal').classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        // Function to get product image
+        function getProductImage(productTitle) {
+            const productName = productTitle.toLowerCase();
+            let imageSrc = '';
+
+            if (productName.includes('nebras')) {
+                imageSrc = 'perfumes/Lattafa nebras bottle.webp';
+            } else if (productName.includes('eclaire')) {
+                imageSrc = 'perfumes/Lattafa Eclaire-Bottle-1.webp';
+            } else if (productName.includes('intense man')) {
+                imageSrc = 'perfumes/club de nuit  intense man bottle.png';
+            } else if (productName.includes('maleka')) {
+                imageSrc = 'perfumes/club de nuit maleka bottle.jpg';
+            } else if (productName.includes('atlas')) {
+                imageSrc = 'perfumes/Latafa atlas.webp';
+            } else if (productName.includes('pink')) {
+                imageSrc = 'perfumes/musouf pink.webp';
+            } else if (productName.includes('brown')) {
+                imageSrc = 'perfumes/mosouf brown.webp';
+            } else if (productName.includes('woman') && !productName.includes('intense man')) {
+                imageSrc = 'perfumes/club de nuit woman box.webp';
+            } else if (productName.includes('imperiale')) {
+                imageSrc = 'perfumes/club de nuit imperiale bottle.webp';
+            } else if (productName.includes('9pm rebel')) {
+                imageSrc = 'perfumes/afnan 9pm rebel bottle.webp';
+            } else if (productName.includes('9pm') && !productName.includes('rebel')) {
+                imageSrc = 'perfumes/Afnan 9pm box.jpg';
+            } else if (productName.includes('yara')) {
+                imageSrc = 'perfumes/Lattafa yara box.webp';
+            }
+
+            return imageSrc || 'perfumes/placeholder.jpg';
+        }
+
+        // Function to populate fragrance notes
+        function populateFragranceNotes(productData) {
+            // Top Notes
+            const topNotesElement = document.getElementById('topNotes');
+            topNotesElement.innerHTML = '';
+            if (productData.topNotes) {
+                productData.topNotes.forEach(note => {
+                    const noteElement = document.createElement('span');
+                    noteElement.className = 'note-tag';
+                    noteElement.className = 'note-tag';
+                    noteElement.textContent = note;
+                    topNotesElement.appendChild(noteElement);
+                });
+            }
+
+            // Heart Notes
+            const heartNotesElement = document.getElementById('heartNotes');
+            heartNotesElement.innerHTML = '';
+            if (productData.heartNotes) {
+                productData.heartNotes.forEach(note => {
+                    const noteElement = document.createElement('span');
+                    noteElement.className = 'note-tag';
+                    noteElement.textContent = note;
+                    heartNotesElement.appendChild(noteElement);
+                });
+            }
+
+            // Base Notes
+            const baseNotesElement = document.getElementById('baseNotes');
+            baseNotesElement.innerHTML = '';
+            if (productData.baseNotes) {
+                productData.baseNotes.forEach(note => {
+                    const noteElement = document.createElement('span');
+                    noteElement.className = 'note-tag';
+                    noteElement.textContent = note;
+                    baseNotesElement.appendChild(noteElement);
+                });
+            }
+        }
+
+        // Function to generate recommendations
+        function generateRecommendations(currentProduct) {
+            const recommendationsGrid = document.getElementById('recommendationsGrid');
+            recommendationsGrid.innerHTML = '';
+
+            const allProducts = Object.keys(productData);
+            const recommendations = allProducts
+                .filter(product => product !== currentProduct)
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 4);
+
+            recommendations.forEach(productName => {
+                const product = productData[productName];
+                const recommendationCard = document.createElement('div');
+                recommendationCard.className = 'recommendation-card';
+                recommendationCard.innerHTML = `
+                    <div class="recommendation-image" style="background-image: url('${getProductImage(productName)}');"></div>
+                    <div class="recommendation-info">
+                        <h4 class="recommendation-title">${productName}</h4>
+                        <p class="recommendation-price">${product.price}</p>
+                    </div>
+                `;
+
+                recommendationCard.addEventListener('click', () => {
+                    // Add this product and go to checkout directly
+                    addToCartByTitle(productName);
+                    window.location.href = 'checkout.html';
+                });
+
+                recommendationsGrid.appendChild(recommendationCard);
+            });
+        }
+
+        // Accordion functionality
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const accordionItem = header.parentElement;
+                const content = accordionItem.querySelector('.accordion-content');
+                const icon = header.querySelector('.accordion-icon');
+
+                accordionItem.classList.toggle('active');
+                content.classList.toggle('active');
+            });
+        });
+
+        // Close expanded modal
+        document.getElementById('expandedModalClose').addEventListener('click', () => {
+            document.getElementById('expandedModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('expandedModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('expandedModal')) {
+                document.getElementById('expandedModal').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('expandedModal').classList.contains('active')) {
+                document.getElementById('expandedModal').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Get product data
+        function getProductData(title) {
+            return productData[title];
+        }
+
+        // Add to cart functionality (modal - legacy id and expanded modal button)
+        function handleAddToCartFromExpanded() {
+            const productTitle = document.getElementById('expandedProductTitle').textContent;
+            if (productTitle) {
+                addToCartByTitle(productTitle);
+            }
+            const expanded = document.getElementById('expandedModal');
+            if (expanded) {
+                expanded.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        if (modalAddToCart) {
+            modalAddToCart.addEventListener('click', handleAddToCartFromExpanded);
+        }
+        const expandedAddBtn = document.querySelector('.add-to-cart-expanded');
+        if (expandedAddBtn) {
+            expandedAddBtn.addEventListener('click', handleAddToCartFromExpanded);
+        }
+
+        // Pay with Airtel button -> go to checkout and prefer mobile money
+        const airtelBtn = document.querySelector('.pay-with-airtel');
+        if (airtelBtn) {
+            airtelBtn.addEventListener('click', () => {
+                // Ensure current product is added
+                const currentTitle = document.getElementById('expandedProductTitle')?.textContent;
+                if (currentTitle) addToCartByTitle(currentTitle);
+                localStorage.setItem('preferredPayment', 'mobile');
+                window.location.href = 'checkout.html';
+            });
+        }
+
+        // WhatsApp button behavior (uniform, always clickable)
+        function openWhatsApp() {
+            const phone = '256753610142';
+            const url = `https://wa.me/${phone}`;
+            window.open(url, '_blank');
+        }
+
+        if (whatsappBtnEl) {
+            whatsappBtnEl.addEventListener('click', openWhatsApp);
+        }
+        if (whatsappTextEl) {
+            whatsappTextEl.addEventListener('click', openWhatsApp);
+        }
+    </script>
+</body>
+
+</html>

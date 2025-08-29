@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Your Scent – Quiz | Sanctuary Scents</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: #654321;
+            color: #333;
+        }
+
+        .page {
+            min-height: 100svh;
+            display: grid;
+            place-items: center;
+            padding: 2rem;
+            background: #654321;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 880px;
+            background: #fff;
+            border-radius: 0;
+            padding: 2rem;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(101, 67, 33, 0.08);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            color: #654321;
+            text-decoration: none;
+        }
+
+        .brand img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .brand span {
+            font-weight: 600;
+            letter-spacing: .2px;
+        }
+
+        .progress {
+            height: auto;
+            background: transparent;
+            border-radius: 0;
+            overflow: visible;
+            width: auto;
+            font-weight: 600;
+            color: #654321;
+            font-size: 1.1rem;
+        }
+
+        .progress>span {
+            display: inline;
+            height: auto;
+            width: auto;
+            background: none;
+            transition: none;
+        }
+
+        h1.question {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 600;
+            font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.2rem);
+            text-align: center;
+            color: #2d2720;
+            margin: 1rem 0 1.5rem;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            position: relative;
+        }
+
+        .option {
+            padding: 1.25rem 1.25rem;
+            border: 2px solid rgba(101, 67, 33, 0.18);
+            border-radius: 0;
+            background: #faf8f5;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option:hover {
+            transform: translateY(-2px);
+            border-color: #654321;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.08);
+        }
+
+        .option h3 {
+            margin: 0 0 .5rem;
+            color: #654321;
+            font-size: 1.05rem;
+        }
+
+        .option p {
+            margin: 0;
+            color: #555;
+            line-height: 1.5;
+            font-size: .95rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.25rem;
+            gap: .75rem;
+        }
+
+        .btn {
+            appearance: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 999px;
+            padding: .75rem 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #654321;
+            border: 2px solid #654321;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8B4513, #654321);
+            color: #f5f5dc;
+        }
+
+        .btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 1rem;
+            color: #777;
+            font-size: .9rem;
+        }
+
+        @media (max-width: 760px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .recommendations-grid {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            .recommendation-card {
+                margin: 0;
+                flex: 0 0 auto;
+                max-width: 280px;
+            }
+
+            .recommendation-image {
+                height: 180px;
+            }
+
+            .recommendation-image.smaller {
+                height: 180px;
+            }
+        }
+
+        /* WhatsApp floating (uniform) */
+        .chat-text {
+            position: fixed;
+            right: 30px;
+            bottom: 110px;
+            background: #ffffff;
+            color: #654321;
+            padding: 0.5rem 0.75rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            background: #25d366;
+        }
+
+        .floating-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-icon {
+            width: 28px;
+            height: 28px;
+            background-image: url('perfumes/whatsapp icon.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Product card styling for recommendations */
+        .recommendations-grid {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+            cursor: pointer;
+            flex: 0 0 250px;
+            max-width: 250px;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .recommendation-image {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .recommendation-image.smaller {
+            height: 150px;
+            background-size: contain;
+        }
+
+        .recommendation-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(139, 69, 19, 0.2);
+        }
+
+        .recommendation-info {
+            padding: 1rem;
+        }
+
+        .recommendation-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .recommendation-price {
+            font-size: 0.9rem;
+            color: #8B4513;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-brand {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-description {
+            color: #666;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            margin-bottom: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .view-in-shop {
+            width: 100%;
+            background: #654321;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .view-in-shop:hover {
+            background: #4a2c0f;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+        <section class="card" role="dialog" aria-modal="true" aria-labelledby="q">
+            <div class="topbar">
+                <a href="Sanctuary1.html" class="brand">
+                    <img src="perfumes/sanctuary scents logo transparent.png" alt="Sanctuary Scents" />
+                    <span>Sanctuary Scents</span>
+                </a>
+                <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+            </div>
+
+            <h1 id="q" class="question">What type of fragrance are you looking for?</h1>
+            <div id="opts" class="options"></div>
+
+            <div class="nav">
+                <button id="backBtn" class="btn btn-outline" disabled>Back</button>
+                <button id="skipBtn" class="btn btn-outline" style="display:none;">Skip</button>
+            </div>
+            <div class="footer-note">This quick quiz helps us match you with the perfect fragrances.</div>
+        </section>
+    </main>
+
+    <!-- Floating WhatsApp (uniform) -->
+    <div class="chat-text" id="chatText">Chat with us</div>
+    <div class="floating-whatsapp" id="whatsappButton">
+        <div class="whatsapp-icon"></div>
+    </div>
+
+    <script>
+        const steps = [
+            {
+                id: 'gender',
+                question: 'What type of fragrance are you looking for?',
+                options: [
+                    { key: 'masculine', title: 'Masculine', desc: 'Fragrances crafted with bold, refined character' },
+                    { key: 'feminine', title: 'Feminine', desc: 'Fragrances with elegance, softness and grace' }
+                ]
+            },
+            {
+                id: 'masculine_style', dependsOn: { id: 'gender', value: 'masculine' },
+                question: 'Which types of scents do you typically gravitate towards?',
+                options: [
+                    { key: 'sophisticated', title: 'Sophisticated', desc: 'Multifaceted compositions that are perfectly balanced. Creamy gourmand notes with textured spices & woods.' },
+                    { key: 'sporty', title: 'Sporty', desc: 'Easy-going, clean fragrances. Bright and light scents that evoke fresh masculinity.' }
+                ]
+            },
+            {
+                id: 'feminine_style', dependsOn: { id: 'gender', value: 'feminine' },
+                question: 'Which types of scents do you typically gravitate towards?',
+                options: [
+                    { key: 'warm', title: 'Warm', desc: 'Comforting, sensual scents with layers of depth. Think opulent florals, creamy woods, and elegant sweetness.' },
+                    { key: 'fresh', title: 'Fresh', desc: 'Optimistic scents, with lots of whimsy and charm. These bright and light fragrances create an airy, sparkly, fizzy effect.' }
+                ]
+            },
+            {
+                id: 'masculine_sophisticated_depth', dependsOn: { id: 'masculine_style', value: 'sophisticated' },
+                question: 'Do you prefer darker, richer moods or lighter, subtle freshness?',
+                options: [
+                    { key: 'dark', title: 'Dark', desc: 'Rich, mysterious scents with mood. Distinct personality that commands attention.' },
+                    { key: 'light', title: 'Light', desc: 'Subtle, fresh, comfortable scents that embody relaxation and lightness.' }
+                ]
+            },
+            {
+                id: 'masculine_sporty_vibe', dependsOn: { id: 'masculine_style', value: 'sporty' },
+                question: 'Which vibe are you going for?',
+                options: [
+                    { key: 'sensual', title: 'Sensual', desc: 'Warm, sweet scents with depth. Rich spices and creamy woods wrapped in elegant sweetness.' },
+                    { key: 'clean', title: 'Clean', desc: 'Crisp, energizing scents that radiate freshness with aromatic herbs, sparkling citrus and aquatic notes.' }
+                ]
+            },
+            {
+                id: 'feminine_warm_depth', dependsOn: { id: 'feminine_style', value: 'warm' },
+                question: 'Which type of composition appeals to you most?',
+                options: [
+                    { key: 'sophisticated_fem', title: 'Sophisticated', desc: 'Complex, textured compositions with mood. Beautifully balanced, with layered femininity and rich, opulent notes.' },
+                    { key: 'playful_fem', title: 'Playful', desc: 'Fun, easy-going scents that are light and airy. Evoking a sense of joy and simplicity, being carefree and fancy-free.' }
+                ]
+            },
+            {
+                id: 'feminine_fresh_depth', dependsOn: { id: 'feminine_style', value: 'fresh' },
+                question: 'Which type of composition appeals to you most?',
+                options: [
+                    { key: 'sophisticated_fem', title: 'Sophisticated', desc: 'Complex, textured compositions with mood. Beautifully balanced, with layered femininity and rich, opulent notes.' },
+                    { key: 'playful_fem', title: 'Playful', desc: 'Fun, easy-going scents that are light and airy. Evoking a sense of joy and simplicity, being carefree and fancy-free.' }
+                ]
+            },
+            {
+                id: 'feminine_sophisticated_final', dependsOn: { id: 'feminine_warm_depth', value: 'sophisticated_fem' },
+                question: 'How do you want your scent to make you feel?',
+                options: [
+                    { key: 'bold', title: 'Bold', desc: 'Distinctive, strong, memorable scents. To match your robust personality that demands attention.' },
+                    { key: 'soft', title: 'Soft', desc: 'Comforting, sweet and delicious scents. Fragrances that embody your sense of relaxation and lightness.' }
+                ]
+            },
+            {
+                id: 'feminine_playful_final', dependsOn: { id: 'feminine_warm_depth', value: 'playful_fem' },
+                question: 'How do you want your scent to make you feel?',
+                options: [
+                    { key: 'bold', title: 'Bold', desc: 'Distinctive, strong, memorable scents. To match your robust personality that demands attention.' },
+                    { key: 'soft', title: 'Soft', desc: 'Comforting, sweet and delicious scents. Fragrances that embody your sense of relaxation and lightness.' }
+                ]
+            },
+            {
+                id: 'feminine_sophisticated_fresh_final', dependsOn: { id: 'feminine_fresh_depth', value: 'sophisticated_fem' },
+                question: 'How do you want your scent to make you feel?',
+                options: [
+                    { key: 'bold', title: 'Bold', desc: 'Distinctive, strong, memorable scents. To match your robust personality that demands attention.' },
+                    { key: 'soft', title: 'Soft', desc: 'Comforting, sweet and delicious scents. Fragrances that embody your sense of relaxation and lightness.' }
+                ]
+            },
+            {
+                id: 'feminine_playful_fresh_final', dependsOn: { id: 'feminine_fresh_depth', value: 'playful_fem' },
+                question: 'How do you want your scent to make you feel?',
+                options: [
+                    { key: 'bold', title: 'Bold', desc: 'Distinctive, strong, memorable scents. To match your robust personality that demands attention.' },
+                    { key: 'soft', title: 'Soft', desc: 'Comforting, sweet and delicious scents. Fragrances that embody your sense of relaxation and lightness.' }
+                ]
+            },
+            {
+                id: 'final_feel',
+                question: 'How do you want your scent to make you feel?',
+                options: [
+                    { key: 'easy', title: 'Easy going & casual' },
+                    { key: 'sophisticated_end', title: 'Sophisticated & sensual' },
+                    { key: 'adventurous', title: 'Outgoing & adventurous' },
+                    { key: 'fresh', title: 'Fresh & clean' },
+                    { key: 'classic', title: 'Classic & timeless' }
+                ]
+            }
+        ];
+
+        const state = {};
+        const qEl = document.getElementById('q');
+        const optsEl = document.getElementById('opts');
+        const backBtn = document.getElementById('backBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function getNextIndex(currentIndex) {
+            for (let i = currentIndex + 1; i < steps.length; i++) {
+                const s = steps[i];
+                if (!s.dependsOn) return i;
+                const depVal = state[s.dependsOn.id];
+                if (depVal === s.dependsOn.value) return i;
+            }
+            return -1;
+        }
+
+        function getPrevIndex(currentIndex) {
+            for (let i = currentIndex - 1; i >= 0; i--) {
+                const s = steps[i];
+                if (!s.dependsOn) return i;
+                const depVal = state[s.dependsOn.id];
+                if (depVal === s.dependsOn.value) return i;
+            }
+            return -1;
+        }
+
+        function getFirstIndex() { return 0; }
+
+        function countRemaining(fromIndex) {
+            let count = 1; let current = fromIndex;
+            while (true) { const next = getNextIndex(current); if (next === -1) break; count++; current = next; }
+            return count;
+        }
+
+        function updateProgress(currentIndex) {
+            // Calculate total steps for current path from beginning
+            let total = 1;
+            let i = 0;
+            while (true) {
+                const n = getNextIndex(i);
+                if (n === -1) break;
+                total++;
+                i = n;
+            }
+            const currentStep = Object.keys(state).length + 1;
+            progressBar.textContent = `${currentStep}/${total}`;
+        }
+
+        function renderStep(index) {
+            const step = steps[index];
+            qEl.textContent = step.question;
+            optsEl.innerHTML = '';
+            backBtn.disabled = (getPrevIndex(index) === -1);
+            updateProgress(index);
+
+            step.options.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerHTML = `<h3>${opt.title}</h3>${opt.desc ? `<p>${opt.desc}</p>` : ''}`;
+                div.addEventListener('click', () => {
+                    state[step.id] = opt.key;
+                    const next = getNextIndex(index);
+                    if (next === -1) {
+                        // Build result profile and show suggestions
+                        showResults();
+                    } else {
+                        renderStep(next);
+                    }
+                });
+                optsEl.appendChild(div);
+            });
+
+            backBtn.onclick = () => {
+                const prev = getPrevIndex(index);
+                if (prev !== -1) renderStep(prev);
+            };
+        }
+
+        // WhatsApp
+        (function () { function openWhatsApp() { const phone = '256753610142'; window.open(`https://wa.me/${phone}`, '_blank'); } const b = document.getElementById('whatsappButton'); const t = document.getElementById('chatText'); if (b) b.addEventListener('click', openWhatsApp); if (t) t.addEventListener('click', openWhatsApp); })();
+
+        // Product data for recommendations
+        const productData = {
+            'Lattafa Nebras': {
+                brand: 'Lattafa',
+                description: 'A sophisticated oriental fragrance featuring notes of vanilla, amber, and sandalwood. Perfect for evening wear with its warm, sensual character that creates an aura of mystery and elegance.',
+                topNotes: ['Vanilla', 'Amber', 'Sandalwood'],
+                heartNotes: ['Musk', 'Patchouli'],
+                baseNotes: ['Tonka Bean', 'Oriental Notes'],
+                price: 'UGX 135,000',
+                image: 'perfumes/lattafa nebras box.webp'
+            },
+            'Lattafa Eclaire': {
+                brand: 'Lattafa',
+                description: 'An elegant blend of bergamot, jasmine, and white musk. This fresh and modern fragrance offers a clean, sophisticated scent perfect for daily wear.',
+                topNotes: ['Bergamot', 'Jasmine'],
+                heartNotes: ['White Musk', 'Lily of the Valley'],
+                baseNotes: ['Peony', 'Cedar'],
+                price: 'UGX 145,000',
+                image: 'perfumes/lattafa eclaire box.webp'
+            },
+            'Club de Nuit Intense Man': {
+                brand: 'Club de Nuit',
+                description: 'A powerful masculine fragrance with notes of black currant, bergamot, and birch. Features a distinctive smoky leather accord that\'s bold and unforgettable.',
+                topNotes: ['Pineapple', 'Pink Pepper', 'Black Pepper', 'Lime', 'Lemon', 'Bergamot'],
+                heartNotes: ['Rose', 'Lily of the Valley', 'Freesia', 'Jasmine'],
+                baseNotes: ['Leather', 'Cedarwood', 'Patchouli', 'Ambergris', 'White Musk', 'Ambroxan'],
+                price: 'UGX 165,000',
+                image: 'perfumes/club de nuit intense man box.webp'
+            },
+            'Club de Nuit Maleka': {
+                brand: 'Club de Nuit',
+                description: 'An elegant and refined fragrance for the sophisticated woman. Features delicate floral notes with a modern twist, perfect for both day and evening wear.',
+                topNotes: ['Bergamot', 'Pink Pepper', 'Lemon'],
+                heartNotes: ['Rose', 'Jasmine', 'Peony', 'Freesia'],
+                baseNotes: ['White Musk', 'Amber', 'Vanilla', 'Sandalwood'],
+                price: 'UGX 165,000',
+                image: 'perfumes/club de nuit maleka bottle.jpg'
+            },
+            'Lattafa Atlas': {
+                brand: 'Lattafa',
+                description: 'A unique and sophisticated fragrance with distinctive character. Combines oriental and woody notes for a memorable scent that stands out.',
+                topNotes: ['Bergamot', 'Saffron', 'Pink Pepper'],
+                heartNotes: ['Oud', 'Amber', 'Rose'],
+                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
+                price: 'UGX 150,000',
+                image: 'perfumes/lattafa atlas bottle.jpg'
+            },
+            'Mousuf Pink': {
+                brand: 'Mousuf',
+                description: 'A delicate and feminine fragrance with soft, romantic notes. Perfect for daily wear with its gentle, uplifting character that brings joy and elegance.',
+                topNotes: ['Peach', 'Strawberry', 'Bergamot'],
+                heartNotes: ['Rose', 'Jasmine', 'Peony'],
+                baseNotes: ['Vanilla', 'White Musk', 'Sandalwood'],
+                price: 'UGX 100,000',
+                image: 'perfumes/mousuf pink bottle.jpg'
+            },
+            'Mousuf Brown': {
+                brand: 'Mousuf',
+                description: 'A rich and sophisticated masculine fragrance with deep, warm notes. Ideal for evening wear and special occasions with its commanding presence.',
+                topNotes: ['Bergamot', 'Lavender', 'Pink Pepper'],
+                heartNotes: ['Amber', 'Vanilla', 'Rose'],
+                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
+                price: 'UGX 100,000',
+                image: 'perfumes/mousuf and brown.webp'
+            },
+            'Club de Nuit Woman': {
+                brand: 'Club de Nuit',
+                description: 'A sophisticated and alluring fragrance for the modern woman. Combines classic elegance with contemporary appeal for a timeless scent.',
+                topNotes: ['Peach', 'Bergamot', 'Pink Pepper'],
+                heartNotes: ['Rose', 'Jasmine', 'Freesia'],
+                baseNotes: ['Amber', 'Vanilla', 'Musk', 'Sandalwood'],
+                price: 'UGX 165,000',
+                image: 'perfumes/club de nuit woman bottle.jpg'
+            },
+            'Club de Nuit Imperiale': {
+                brand: 'Club de Nuit',
+                description: 'A regal and commanding fragrance with imperial elegance. Perfect for those who appreciate luxury and sophistication with its noble character.',
+                topNotes: ['Bergamot', 'Pink Pepper', 'Lemon'],
+                heartNotes: ['Rose', 'Oud', 'Amber'],
+                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
+                price: 'UGX 170,000',
+                image: 'perfumes/club de nuit imperiale bottle.jpg'
+            },
+            'Afnan 9PM Rebel': {
+                brand: 'Afnan',
+                description: 'A bold and rebellious fragrance with intense character and deep notes. Perfect for those who want to make a statement with their scent.',
+                topNotes: ['Black Pepper', 'Bergamot', 'Pink Pepper'],
+                heartNotes: ['Lavender', 'Amber', 'Rose'],
+                baseNotes: ['Musk', 'Vanilla', 'Sandalwood'],
+                price: 'UGX 185,000',
+                image: 'perfumes/afnan 9pm rebel bottle.jpg'
+            },
+            'Afnan 9PM': {
+                brand: 'Afnan',
+                description: 'A sophisticated evening fragrance with deep, rich notes for special occasions. Elegant and timeless with its refined character.',
+                topNotes: ['Bergamot', 'Lavender', 'Pink Pepper'],
+                heartNotes: ['Amber', 'Rose', 'Jasmine'],
+                baseNotes: ['Vanilla', 'Musk', 'Sandalwood'],
+                price: 'UGX 150,000',
+                image: 'perfumes/afnan 9pm bottle.jpg'
+            },
+            'Lattafa Yara': {
+                brand: 'Lattafa',
+                description: 'A delicate and feminine fragrance with floral elegance and grace. Perfect for daily wear with its soft, romantic character.',
+                topNotes: ['Peach', 'Strawberry', 'Bergamot'],
+                heartNotes: ['Rose', 'Jasmine', 'Peony'],
+                baseNotes: ['Vanilla', 'White Musk', 'Sandalwood'],
+                price: 'UGX 120,000',
+                image: 'perfumes/lattafa yara bottle.jpg'
+            }
+        };
+
+        // Build scent profile and map to shop products
+        function loadShopProducts() {
+            return productData;
+        }
+
+        function showResults() {
+            const products = loadShopProducts();
+            // Derive accords from path based on gender
+            const accords = [];
+
+            if (state.gender === 'masculine') {
+                // Masculine path logic
+                accords.push('woods', 'spice', 'citrus');
+                if (state.masculine_style === 'sophisticated') accords.push('amber', 'leather');
+                if (state.masculine_style === 'sporty') accords.push('citrus', 'aquatic', 'aromatic');
+                if (state.masculine_sophisticated_depth === 'dark') accords.push('smoky', 'oud');
+                if (state.masculine_sophisticated_depth === 'light') accords.push('fresh');
+                if (state.masculine_sporty_vibe === 'sensual') accords.push('vanilla', 'amber');
+                if (state.masculine_sporty_vibe === 'clean') accords.push('citrus', 'herbal');
+                if (state.final_feel === 'fresh') accords.push('fresh');
+                if (state.final_feel === 'sophisticated_end') accords.push('amber');
+                if (state.final_feel === 'classic') accords.push('musk');
+            } else if (state.gender === 'feminine') {
+                // Feminine path logic
+                accords.push('floral', 'vanilla', 'musk');
+                if (state.feminine_style === 'warm') accords.push('amber', 'woods', 'gourmand');
+                if (state.feminine_style === 'fresh') accords.push('citrus', 'aquatic', 'fruity');
+                if (state.sophisticated_fem) accords.push('rose', 'jasmine', 'oud', 'amber');
+                if (state.playful_fem) accords.push('peach', 'strawberry', 'peony', 'light');
+                if (state.bold) accords.push('intense', 'oriental', 'spice');
+                if (state.soft) accords.push('sweet', 'comforting', 'gentle');
+            }
+
+            // Score products by overlapping notes -> simple heuristic
+            const scored = Object.keys(products).map(name => {
+                const p = products[name];
+                const notes = (p.topNotes || []).concat(p.heartNotes || []).concat(p.baseNotes || []).map(n => n.toLowerCase());
+                const score = accords.reduce((s, a) => s + notes.some(n => n.includes(a)) ? 1 : 0, 0);
+                return { name, score, price: p.price, product: p };
+            }).sort((a, b) => b.score - a.score).slice(0, 3);
+
+            // Render results with scent profile
+            qEl.textContent = 'Your Scent Profile';
+            optsEl.innerHTML = '';
+
+            const profile = document.createElement('div');
+            profile.style.background = '#faf8f5';
+            profile.style.border = '2px solid rgba(101,67,33,0.18)';
+            profile.style.borderRadius = '15px';
+            profile.style.padding = '1.5rem';
+            profile.style.marginBottom = '2rem';
+            profile.style.textAlign = 'center';
+            profile.style.maxWidth = '400px';
+            profile.style.margin = '0 auto 2rem auto';
+            profile.innerHTML = `
+                <h3 style="margin-top:0;color:#654321;font-size:1.3rem;margin-bottom:1rem">Accords you may like</h3>
+                <p style="color:#666;margin:0;font-size:1rem">${accords.join(', ')}</p>
+            `;
+            optsEl.appendChild(profile);
+
+            // Add recommendations title
+            const recsTitle = document.createElement('h3');
+            recsTitle.style.color = '#654321';
+            recsTitle.style.fontSize = '1.4rem';
+            recsTitle.style.marginBottom = '1.5rem';
+            recsTitle.style.textAlign = 'center';
+            recsTitle.textContent = 'Recommended Perfumes';
+            optsEl.appendChild(recsTitle);
+
+            // Create recommendations grid
+            const recsGrid = document.createElement('div');
+            recsGrid.className = 'recommendations-grid';
+
+            scored.forEach(rec => {
+                const product = rec.product;
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+
+                // Determine if image should use smaller sizing
+                const imageClass = (product.name === 'Lattafa Eclaire' || product.name === 'Club de Nuit Intense Man') ? 'recommendation-image smaller' : 'recommendation-image';
+
+                card.innerHTML = `
+                    <div class="${imageClass}" style="background-image: url('${product.image}')"></div>
+                    <div class="recommendation-info">
+                        <div class="recommendation-brand">${product.brand}</div>
+                        <div class="recommendation-title">${product.name}</div>
+                        <div class="recommendation-price">${product.price}</div>
+                        <div class="recommendation-description">${product.description}</div>
+                        <a href="shop.html" class="view-in-shop">View in Shop</a>
+                    </div>
+                `;
+
+                // Make the entire card clickable to redirect to shop
+                card.addEventListener('click', () => {
+                    window.location.href = 'shop.html';
+                });
+
+                recsGrid.appendChild(card);
+            });
+
+            optsEl.appendChild(recsGrid);
+
+            // Hide navigation buttons since this is the final step
+            backBtn.style.display = 'none';
+            skipBtn.style.display = 'none';
+        }
+
+        renderStep(getFirstIndex());
+    </script>
+</body>
+
+</html>
