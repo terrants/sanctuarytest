@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Sanctuary Scents</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .checkout-header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.5rem;
+            color: #654321;
+            margin-bottom: 1rem;
+        }
+
+        .checkout-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+
+        .checkout-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #654321;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .payment-method {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .payment-method:hover {
+            border-color: #654321;
+            transform: translateY(-2px);
+        }
+
+        .payment-method.selected {
+            border-color: #654321;
+            background: #f8f6f3;
+        }
+
+        .payment-method img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-method h4 {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-method p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .order-summary {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .order-summary h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+        }
+
+        .cart-item-details h4 {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-item-price {
+            font-weight: 600;
+            color: #8B4513;
+        }
+
+        .cart-total {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-row.final {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #8B4513;
+            border-top: 1px solid #f0e0e0;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #654321;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        .checkout-btn:hover {
+            background: #4a2c0f;
+            transform: translateY(-2px);
+        }
+
+        .checkout-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-to-shop {
+            display: inline-block;
+            color: #654321;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-to-shop:hover {
+            color: #4a2c0f;
+            text-decoration: underline;
+        }
+
+        .mobile-money-section {
+            background: #f8f6f3;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .mobile-money-section.active {
+            display: block;
+        }
+
+        .bank-section {
+            background: #f8f6f3;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .bank-section.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        /* WhatsApp floating (uniform) */
+        .chat-text {
+            position: fixed;
+            right: 30px;
+            bottom: 110px;
+            background: #ffffff;
+            color: #654321;
+            padding: 0.5rem 0.75rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            background: #25d366;
+        }
+
+        .floating-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-icon {
+            width: 28px;
+            height: 28px;
+            background-image: url('perfumes/whatsapp icon.png');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1>Complete Your Order</h1>
+            <p>Secure checkout with multiple payment options</p>
+        </div>
+
+        <div class="checkout-grid">
+            <div class="checkout-form">
+                <form id="checkoutForm">
+                    <div class="form-section">
+                        <h3>Contact Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Shipping Address</h3>
+                        <div class="form-group">
+                            <label for="address">Street Address *</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City *</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="district">District *</label>
+                                <input type="text" id="district" name="district" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postalCode">Postal Code</label>
+                            <input type="text" id="postalCode" name="postalCode">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Payment Method</h3>
+                        <div class="payment-methods">
+                            <div class="payment-method" data-method="mobile">
+                                <img src="perfumes/airtel.jpeg" alt="Mobile Money">
+                                <h4>Mobile Money</h4>
+                                <p>Airtel, MTN, M-Pesa</p>
+                            </div>
+                            <div class="payment-method" data-method="bank">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzY1NDMyMSIvPgo8cGF0aCBkPSJNMTIgMTVIMjhWMTdIMTJWMTVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIgMTlIMjhWMjFIMTJWMjlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIgMjNIMjhWMjVIMTJWMjNaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K"
+                                    alt="Bank Transfer">
+                                <h4>Bank Transfer</h4>
+                                <p>Direct bank deposit</p>
+                            </div>
+                        </div>
+
+                        <div class="mobile-money-section" id="mobileMoneySection">
+                            <h4>Mobile Money Details</h4>
+                            <div class="form-group">
+                                <label for="mobileProvider">Select Provider *</label>
+                                <select id="mobileProvider" name="mobileProvider" required>
+                                    <option value="">Choose provider</option>
+                                    <option value="airtel">Airtel Money</option>
+                                    <option value="mtn">MTN Mobile Money</option>
+                                    <option value="mpesa">M-Pesa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="mobileNumber">Mobile Number *</label>
+                                <input type="tel" id="mobileNumber" name="mobileNumber" placeholder="e.g., 0753610142"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="bank-section" id="bankSection">
+                            <h4>Bank Transfer Details</h4>
+                            <div class="form-group">
+                                <label for="bankName">Bank Name *</label>
+                                <select id="bankName" name="bankName" required>
+                                    <option value="">Select bank</option>
+                                    <option value="stanbic">Stanbic Bank Uganda</option>
+                                    <option value="dfcu">DFCU Bank</option>
+                                    <option value="centenary">Centenary Bank</option>
+                                    <option value="crane">Crane Bank</option>
+                                    <option value="equity">Equity Bank Uganda</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="accountNumber">Account Number *</label>
+                                <input type="text" id="accountNumber" name="accountNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="accountName">Account Holder Name *</label>
+                                <input type="text" id="accountName" name="accountName" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Order Notes</h3>
+                        <div class="form-group">
+                            <label for="orderNotes">Special Instructions (Optional)</label>
+                            <textarea id="orderNotes" name="orderNotes" rows="3"
+                                placeholder="Any special delivery instructions or preferences..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="cart-item">
+                    <div class="cart-item-image" id="cartItemImage"
+                        style="background-image: url('perfumes/Lattafa nebras bottle.webp');"></div>
+                    <div class="cart-item-details">
+                        <h4 id="cartItemName">Lattafa Nebras</h4>
+                        <p class="cart-item-price" id="cartItemPrice">UGX 135,000</p>
+                    </div>
+                </div>
+
+                <div class="cart-total">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">UGX 135,000</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping:</span>
+                        <span>UGX 15,000</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax:</span>
+                        <span>UGX 13,500</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>Total:</span>
+                        <span id="total">UGX 163,500</span>
+                    </div>
+                </div>
+
+                <button class="checkout-btn" id="checkoutBtn" disabled>Complete Order</button>
+                <a href="shopTest.html" class="back-to-shop">← Back to Shop</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp (uniform) -->
+    <div class="chat-text" id="chatText">Chat with us</div>
+    <div class="floating-whatsapp" id="whatsappButton">
+        <div class="whatsapp-icon"></div>
+    </div>
+
+    <script>
+        // WhatsApp button
+        (function () {
+            function openWhatsApp() { const phone = '256753610142'; window.open(`https://wa.me/${phone}`, '_blank'); }
+            const wBtn = document.getElementById('whatsappButton'); const wTxt = document.getElementById('chatText');
+            if (wBtn) wBtn.addEventListener('click', openWhatsApp);
+            if (wTxt) wTxt.addEventListener('click', openWhatsApp);
+        })();
+
+        // Payment method selection
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        const mobileMoneySection = document.getElementById('mobileMoneySection');
+        const bankSection = document.getElementById('bankSection');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', () => {
+                // Remove selected class from all methods
+                paymentMethods.forEach(m => m.classList.remove('selected'));
+
+                // Add selected class to clicked method
+                method.classList.add('selected');
+
+                // Show/hide relevant sections
+                const methodType = method.dataset.method;
+                if (methodType === 'mobile') {
+                    mobileMoneySection.classList.add('active');
+                    bankSection.classList.remove('active');
+                } else if (methodType === 'bank') {
+                    bankSection.classList.add('active');
+                    mobileMoneySection.classList.remove('active');
+                }
+
+                // Enable checkout button
+                checkoutBtn.disabled = false;
+            });
+        });
+
+        // Form validation
+        const form = document.getElementById('checkoutForm');
+        const inputs = form.querySelectorAll('input, select, textarea');
+
+        inputs.forEach(input => {
+            input.addEventListener('input', validateForm);
+            input.addEventListener('change', validateForm);
+        });
+
+        function validateForm() {
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                }
+            });
+
+            // Check if payment method is selected
+            const selectedMethod = document.querySelector('.payment-method.selected');
+            if (!selectedMethod) {
+                isValid = false;
+            }
+
+            // Check payment-specific required fields
+            if (selectedMethod && selectedMethod.dataset.method === 'mobile') {
+                const mobileProvider = document.getElementById('mobileProvider');
+                const mobileNumber = document.getElementById('mobileNumber');
+                if (!mobileProvider.value || !mobileNumber.value.trim()) {
+                    isValid = false;
+                }
+            }
+
+            if (selectedMethod && selectedMethod.dataset.method === 'bank') {
+                const bankName = document.getElementById('bankName');
+                const accountNumber = document.getElementById('accountNumber');
+                const accountName = document.getElementById('accountName');
+                if (!bankName.value || !accountNumber.value.trim() || !accountName.value.trim()) {
+                    isValid = false;
+                }
+            }
+
+            checkoutBtn.disabled = !isValid;
+        }
+
+        // Checkout button functionality
+        checkoutBtn.addEventListener('click', () => {
+            if (checkoutBtn.disabled) return;
+
+            // Collect form data
+            const formData = new FormData(form);
+            const orderData = {
+                contact: {
+                    firstName: formData.get('firstName'),
+                    lastName: formData.get('lastName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone')
+                },
+                shipping: {
+                    address: formData.get('address'),
+                    city: formData.get('city'),
+                    district: formData.get('district'),
+                    postalCode: formData.get('postalCode')
+                },
+                payment: {
+                    method: document.querySelector('.payment-method.selected').dataset.method,
+                    details: {}
+                },
+                orderNotes: formData.get('orderNotes'),
+                total: document.getElementById('total').textContent
+            };
+
+            // Add payment-specific details
+            if (orderData.payment.method === 'mobile') {
+                orderData.payment.details = {
+                    provider: formData.get('mobileProvider'),
+                    number: formData.get('mobileNumber')
+                };
+            } else if (orderData.payment.method === 'bank') {
+                orderData.payment.details = {
+                    bank: formData.get('bankName'),
+                    accountNumber: formData.get('accountNumber'),
+                    accountName: formData.get('accountName')
+                };
+            }
+
+            // Process order (this would integrate with your backend)
+            processOrder(orderData);
+        });
+
+        function processOrder(orderData) {
+            // Show loading state
+            checkoutBtn.textContent = 'Processing...';
+            checkoutBtn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                // Success - redirect to confirmation page
+                alert('Order placed successfully! You will receive a confirmation email shortly.');
+                window.location.href = 'shopTest.html';
+            }, 2000);
+        }
+        // Load full cart from localStorage and render
+        function getCartItems() {
+            try {
+                return JSON.parse(localStorage.getItem('cart') || '[]');
+            } catch {
+                return [];
+            }
+        }
+
+        function formatUGX(n) {
+            return `UGX ${Number(n || 0).toLocaleString()}`;
+        }
+
+        function renderCart() {
+            const items = getCartItems();
+            const firstItemEl = document.querySelector('.order-summary .cart-item');
+            const firstNameEl = document.getElementById('cartItemName');
+            const firstPriceEl = document.getElementById('cartItemPrice');
+            const firstImgEl = document.getElementById('cartItemImage');
+
+            if (items.length === 0) {
+                firstNameEl.textContent = 'Your cart is empty';
+                firstPriceEl.textContent = formatUGX(0);
+                firstImgEl.style.backgroundImage = '';
+            } else {
+                // Populate first
+                firstNameEl.textContent = `${items[0].name} x${items[0].quantity}`;
+                firstPriceEl.textContent = formatUGX(items[0].price * items[0].quantity);
+                firstImgEl.style.backgroundImage = `url('${items[0].image}')`;
+
+                // Remove existing extra rendered items
+                document.querySelectorAll('.order-summary .cart-item.extra').forEach(n => n.remove());
+
+                // Render the rest
+                for (let i = 1; i < items.length; i++) {
+                    const it = items[i];
+                    const row = document.createElement('div');
+                    row.className = 'cart-item extra';
+                    row.innerHTML = `
+                        <div class="cart-item-image" style="background-image: url('${it.image}');"></div>
+                        <div class="cart-item-details">
+                            <h4>${it.name} x${it.quantity}</h4>
+                            <p class="cart-item-price">${formatUGX(it.price * it.quantity)}</p>
+                        </div>
+                    `;
+                    firstItemEl.parentElement.insertBefore(row, firstItemEl.nextSibling);
+                }
+            }
+
+            // Totals
+            const subtotal = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
+            const shipping = items.length ? 15000 : 0;
+            const tax = Math.round(subtotal * 0.1);
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('subtotal').textContent = formatUGX(subtotal);
+            document.getElementById('total').textContent = formatUGX(total);
+        }
+
+        // Preselect payment if coming from Airtel button
+        (function applyPreferredPayment() {
+            const pref = localStorage.getItem('preferredPayment');
+            if (!pref) return;
+            const toClick = document.querySelector(`.payment-method[data-method="${pref}"]`);
+            if (toClick) toClick.click();
+        })();
+
+        // Initialize page
+        renderCart();
+    </script>
+</body>
+
+</html>

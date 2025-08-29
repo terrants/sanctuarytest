@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop Test Expanded Horizontal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #654321;
+      color: #333;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(198, 185, 164, 0.95);
+      padding: 0.5rem 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(139, 69, 19, 0.2);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .navbar.hidden {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem 0 4rem;
+    }
+
+    .logo-image {
+      height: 140px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+    }
+
+    .nav-links a {
+      color: #654321;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .nav-links a:hover {
+      color: #4a2c0f;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .icon-basket {
+      display: inline-block;
+      width: 44px;
+      height: 44px;
+      margin-right: 0.25rem;
+      background-image: url('perfumes/shopping basket.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: sepia(1) saturate(4) hue-rotate(350deg) brightness(0.6);
+      vertical-align: middle;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #e74c3c;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #654321;
+      border: 2px solid #654321;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(101, 67, 33, 0.2);
+      font-size: 0.9rem;
+    }
+
+    .btn-outline:hover {
+      background: #654321;
+      color: #f5f5dc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(101, 67, 33, 0.4);
+    }
+
+    /* Shopping Cart Dropdown */
+    .cart-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 1001;
+      display: none;
+      border: 1px solid rgba(139, 69, 19, 0.1);
+    }
+
+    .nav-actions {
+      position: relative;
+    }
+
+    .cart-dropdown.active {
+      display: block;
+    }
+
+    .cart-header {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .cart-items {
+      padding: 1rem;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .cart-item img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .cart-item-price {
+      color: #8B4513;
+      font-weight: 600;
+    }
+
+    .cart-item-quantity {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .cart-empty {
+      padding: 2rem;
+      text-align: center;
+      color: #666;
+    }
+
+    .cart-empty-phrases {
+      font-style: italic;
+      margin-top: 1rem;
+      color: #8B4513;
+    }
+
+    .quantity-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .quantity-btn:hover {
+      background: #e0e0e0;
+    }
+
+    .cart-empty {
+      padding: 2rem;
+      text-align: center;
+      color: #666;
+    }
+
+    .cart-empty-phrases {
+      font-style: italic;
+      margin-top: 1rem;
+      color: #8B4513;
+    }
+
+    .cart-footer {
+      padding: 1rem;
+      border-top: 1px solid #eee;
+      text-align: center;
+    }
+
+    .proceed-checkout {
+      background: #654321;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    .proceed-checkout:hover {
+      background: #4a2c0f;
+    }
+
+    .remove-btn {
+      background: #e74c3c !important;
+      color: white !important;
+      border: none !important;
+      padding: 0.25rem 0.5rem !important;
+      border-radius: 4px !important;
+      cursor: pointer !important;
+      margin-left: 0.5rem !important;
+      font-weight: bold !important;
+      transition: background 0.3s ease !important;
+    }
+
+    .remove-btn:hover {
+      background: #c0392b !important;
+    }
+
+    .continue-shopping-btn {
+      background: #654321;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .continue-shopping-btn:hover {
+      background: #4a2c0f;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .mobile-menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: #654321;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+
+    .mobile-menu-toggle.active span:nth-child(1) {
+      transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    .mobile-menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-menu-toggle.active span:nth-child(3) {
+      transform: rotate(45deg) translate(-5px, -6px);
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      margin-top: 120px;
+      background: #faf8f5;
+      border-radius: 20px;
+      margin-left: 2rem;
+      margin-right: 2rem;
+    }
+
+    /* Shop Header */
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: white;
+      border: 2px solid #e0e0e0;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .filter-btn.active {
+      background: #654321;
+      color: white;
+      border-color: #654321;
+    }
+
+    .filter-btn:hover {
+      border-color: #654321;
+      color: #654321;
+    }
+
+    .sort-select {
+      padding: 0.75rem 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      background: white;
+      font-size: 1rem;
+    }
+
+    /* Section Title */
+    .section-title {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 4rem;
+      color: #333;
+      font-weight: 300;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    /* Products Grid */
+    #productsGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      background: #f5f5dc;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(139, 69, 19, 0.1);
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 15px 15px 0 0;
+      margin-bottom: 0;
+    }
+
+    .product-info {
+      padding: 2rem;
+    }
+
+    .brand-name {
+      font-size: 0.9rem;
+      color: #654321;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .product-price {
+      color: #8B4513;
+      font-weight: bold;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .add-to-cart {
+      width: 100%;
+      background: #654321;
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .add-to-cart:hover {
+      background: #4a2c0f;
+      transform: translateY(-2px);
+    }
+
+    /* Expanded Product Modal */
+    .expanded-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      overflow-y: auto;
+    }
+
+    .expanded-modal.active {
+      display: block;
+    }
+
+    .expanded-modal-content {
+      background: white;
+      max-width: 1200px;
+      width: 90%;
+      margin: 2rem auto;
+      border-radius: 20px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .expanded-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #654321;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: background 0.3s ease;
+    }
+
+    .expanded-modal-close:hover {
+      background: #4a2c0f;
+    }
+
+    .expanded-product-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      padding: 3rem;
+    }
+
+    .expanded-product-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .expanded-product-image img {
+      max-width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 15px;
+    }
+
+    .expanded-product-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .expanded-product-header h2 {
+      font-size: 2.5rem;
+      color: #333;
+      margin: 0 0 0.5rem;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .expanded-product-header p {
+      font-size: 1.2rem;
+      color: #654321;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .expanded-product-description p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #666;
+      margin: 0;
+    }
+
+    .expanded-product-notes h4 {
+      font-size: 1.3rem;
+      color: #333;
+      margin: 0 0 1rem;
+    }
+
+    .notes-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .accordion-item {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      background: #f8f8f8;
+      padding: 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .accordion-header:hover {
+      background: #f0f0f0;
+    }
+
+    .accordion-content {
+      padding: 1rem;
+      background: white;
+      display: none;
+    }
+
+    .accordion-content.active {
+      display: block;
+    }
+
+    .accordion-icon {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .accordion-item.active .accordion-icon {
+      transform: rotate(45deg);
+    }
+
+    .note-tag {
+      display: inline-block;
+      background: #f8f6f3;
+      color: #654321;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      margin: 0.25rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid rgba(101, 67, 33, 0.2);
+    }
+
+    .expanded-product-price {
+      font-size: 2rem;
+      color: #8B4513;
+      font-weight: bold;
+    }
+
+    .expanded-product-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .add-to-cart-expanded {
+      background: #654321;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .add-to-cart-expanded:hover {
+      background: #4a2c0f;
+      transform: translateY(-2px);
+    }
+
+    .pay-with-airtel {
+      background: #E31837;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pay-with-airtel:hover {
+      background: #C41230;
+      transform: translateY(-2px);
+    }
+
+    .pay-with-airtel img {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+    }
+
+    .more-payment-options {
+      text-align: center;
+      color: #654321;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .more-payment-options:hover {
+      color: #4a2c0f;
+      text-decoration: underline;
+    }
+
+    .you-may-also-like {
+      padding: 2rem 3rem 3rem;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .you-may-also-like h3 {
+      font-size: 1.5rem;
+      color: #333;
+      margin: 0 0 1.5rem;
+      text-align: center;
+    }
+
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .recommendation-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .recommendation-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .recommendation-image {
+      height: 150px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .recommendation-info {
+      padding: 1rem;
+    }
+
+    .recommendation-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0 0 0.5rem;
+    }
+
+    .recommendation-price {
+      font-size: 1.1rem;
+      color: #8B4513;
+      font-weight: bold;
+    }
+
+    /* Footer */
+    .footer {
+      background: #333;
+      color: #f5f5dc;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(139, 69, 19, 0.2);
+      margin-top: 3rem;
+    }
+
+    .footer .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left p {
+      margin: 0.25rem 0;
+    }
+
+    .footer-left .tagline {
+      opacity: 0.9;
+    }
+
+    .footer-right {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+
+    .footer-right .social-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Floating WhatsApp Button */
+    .floating-whatsapp {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+      z-index: 1000;
+      transition: all 0.3s ease, opacity 1.5s ease;
+      cursor: pointer;
+    }
+
+    .chat-text {
+      position: fixed;
+      bottom: 110px;
+      right: 30px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #654321;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      transition: all 0.3s ease, opacity 1.5s ease;
+      white-space: nowrap;
+    }
+
+    .chat-text::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      right: 20px;
+      width: 10px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .floating-whatsapp:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+    }
+
+    .floating-whatsapp::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      background: #25D366;
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: pulse 2s infinite;
+    }
+
+    .whatsapp-icon {
+      width: 30px;
+      height: 30px;
+      background-image: url('perfumes/whatsapp icon.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 1;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.3;
+      }
+
+      50% {
+        transform: scale(1.1);
+        opacity: 0.2;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 0.3;
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .expanded-product-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem;
+      }
+
+      .expanded-product-header h2 {
+        font-size: 2rem;
+      }
+
+      .recommendations-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+
+      .nav-container {
+        padding: 0 1rem;
+      }
+
+      .logo-image {
+        height: 100px;
+      }
+
+      .mobile-menu-toggle {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(198, 185, 164, 0.95);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+        border-top: 1px solid rgba(139, 69, 19, 0.2);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .shop-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filters {
+        justify-content: center;
+      }
+
+      #productsGrid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="sanctuary1.html" class="logo">
+        <img src="perfumes/sanctuary scents logo transparent.png" alt="Sanctuary Scents Logo" class="logo-image">
+      </a>
+
+      <div class="mobile-menu-toggle" id="mobileMenuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="sanctuary1.html">Home</a></li>
+        <li><a href="shopTest.html" class="active">Shop</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <div class="icon-basket" id="cartIcon">
+          <span class="cart-count" id="cartCount">0</span>
+        </div>
+        <a href="checkout.html" class="btn-outline">Checkout</a>
+      </div>
+    </div>
+
+    <!-- Shopping Cart Dropdown -->
+    <div class="cart-dropdown" id="cartDropdown">
+      <div class="cart-header">
+        Shopping Cart
+      </div>
+      <div class="cart-items" id="cartItems">
+        <!-- Cart items will be populated here -->
+      </div>
+      <div class="cart-footer">
+        <button class="proceed-checkout" id="proceedCheckout" style="display: none;">Proceed to Checkout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <!-- Shop Header -->
+    <div class="shop-header">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="masculine">Masculine</button>
+        <button class="filter-btn" data-filter="feminine">Feminine</button>
+        <button class="filter-btn" data-filter="unisex">Unisex</button>
+        <button class="filter-btn" data-filter="new">New Arrivals</button>
+        <button class="filter-btn" data-filter="bestsellers">Bestsellers</button>
+      </div>
+      <select class="sort-select">
+        <option>Sort by: Featured</option>
+        <option>Price: Low to High</option>
+        <option>Price: High to Low</option>
+        <option>Newest First</option>
+        <option>Most Popular</option>
+      </select>
+    </div>
+
+    <h2 class="section-title">Featured Fragrances</h2>
+
+    <div id="productsGrid"></div>
+  </div>
+
+  <!-- Expanded Product Modal -->
+  <div id="expandedModal" class="expanded-modal">
+    <div class="expanded-modal-content">
+      <button class="expanded-modal-close" id="expandedModalClose">&times;</button>
+      <div class="expanded-product-layout">
+        <div class="expanded-product-image">
+          <img id="expandedProductImage" src="" alt="Product Image">
+        </div>
+        <div class="expanded-product-details">
+          <div class="expanded-product-header">
+            <h2 id="expandedProductTitle">Product Title</h2>
+            <p id="expandedProductBrand">Brand</p>
+          </div>
+          <div class="expanded-product-description">
+            <p id="expandedProductDescription">Product description goes here.</p>
+          </div>
+          <div class="expanded-product-notes">
+            <h4>Fragrance Notes</h4>
+            <div class="notes-accordion">
+              <div class="accordion-item">
+                <div class="accordion-header">
+                  <span>Top Notes</span>
+                  <span class="accordion-icon">+</span>
+                </div>
+                <div class="accordion-content" id="topNotes"></div>
+              </div>
+              <div class="accordion-item">
+                <div class="accordion-header">
+                  <span>Heart Notes</span>
+                  <span class="accordion-icon">+</span>
+                </div>
+                <div class="accordion-content" id="heartNotes"></div>
+              </div>
+              <div class="accordion-item">
+                <div class="accordion-header">
+                  <span>Base Notes</span>
+                  <span class="accordion-icon">+</span>
+                </div>
+                <div class="accordion-content" id="baseNotes"></div>
+              </div>
+            </div>
+          </div>
+          <div class="expanded-product-price">
+            <span id="expandedProductPrice">UGX 0</span>
+          </div>
+          <div class="expanded-product-actions">
+            <button class="add-to-cart-expanded" id="expandedAddToCart">Add to Cart</button>
+            <button class="pay-with-airtel" id="expandedPayAirtel">
+              <img src="perfumes/airtel.jpeg" alt="Airtel Money">
+              Pay with Airtel Money
+            </button>
+            <a href="#" class="more-payment-options" id="morePaymentOptions">More Payment Options</a>
+          </div>
+        </div>
+      </div>
+      <div class="you-may-also-like">
+        <h3>You May Also Like</h3>
+        <div class="recommendations-grid" id="recommendationsGrid">
+          <!-- Recommendations will be populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating WhatsApp Button -->
+  <div class="chat-text" id="chatText">Chat with us</div>
+  <div class="floating-whatsapp" id="whatsappButton" onclick="window.open('https://wa.me/256753610142', '_blank')">
+    <div class="whatsapp-icon"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <p>&copy; 2024 Sanctuary Scents. All rights reserved.</p>
+          <p class="tagline">"spray responsibly" - side effects may include obsession!</p>
+        </div>
+        <div class="footer-right">
+          <div class="social-item">
+            <span style="font-size: 1.2rem;">👻</span>
+            <span>sanctuaryscents</span>
+          </div>
+          <div class="social-item">
+            <span style="font-size: 1.2rem;">📷</span>
+            <span>sanctuary_scents_ug</span>
+          </div>
+          <div class="social-item">
+            <span style="font-size: 1.2rem;">📞</span>
+            <span>+256 753 610142</span>
+          </div>
+          <div class="social-item">
+            <span style="font-size: 1.2rem;">📞</span>
+            <span>+254 797 735859</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+    const supabaseUrl = 'https://ptnffxklbwkgzbsegtmr.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0bmZmeGtsYndrZ3pic2VndG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYwNTI1NjksImV4cCI6MjA3MTYyODU2OX0.mEWq1X_0EGxSwd9Xf6BFAMLK9e_nDkA33ZIgKoDihLs'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    let products = []
+    let cart = []
+
+    // Cart functionality
+    function addToCart(product) {
+      const existingItem = cart.find(item => item.id === product.id)
+      if (existingItem) {
+        existingItem.quantity += 1
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.product_name,
+          brand: product.brand_name,
+          price: product.price,
+          image: product.image_url,
+          quantity: 1
+        })
+      }
+      updateCartDisplay()
+      saveCart()
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId)
+      updateCartDisplay()
+      saveCart()
+    }
+
+    function updateQuantity(productId, newQuantity) {
+      if (newQuantity <= 0) {
+        removeFromCart(productId)
+        return
+      }
+      const item = cart.find(item => item.id === productId)
+      if (item) {
+        item.quantity = newQuantity
+        updateCartDisplay()
+        saveCart()
+      }
+    }
+
+    function updateCartDisplay() {
+      const cartCount = document.getElementById('cartCount')
+      const cartItems = document.getElementById('cartItems')
+      const proceedCheckout = document.getElementById('proceedCheckout')
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
+      cartCount.textContent = totalItems
+
+      if (totalItems === 0) {
+        cartCount.style.display = 'none'
+      } else {
+        cartCount.style.display = 'flex'
+      }
+
+      if (cart.length === 0) {
+        const emptyPhrases = [
+          "Add some items to your basket to smell sweeter than honey! 🍯",
+          "Your basket is as empty as a perfume bottle in the desert! 🌵",
+          "Time to fill your basket with scents that'll make heads turn! ✨",
+          "Empty basket? Let's change that with some amazing fragrances! 🌸"
+        ]
+        const randomPhrase = emptyPhrases[Math.floor(Math.random() * emptyPhrases.length)]
+        cartItems.innerHTML = `
+            <div class="cart-empty">
+              <p>Your basket is empty</p>
+              <p class="cart-empty-phrases">${randomPhrase}</p>
+              <button class="continue-shopping-btn" onclick="document.getElementById('cartDropdown').classList.remove('active')">Continue Shopping</button>
+            </div>
+          `
+        proceedCheckout.style.display = 'none'
+      } else {
+        cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item" data-product-id="${item.id}">
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div class="cart-item-price">UGX ${item.price.toLocaleString()}</div>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn minus-btn" data-product-id="${item.id}">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="quantity-btn plus-btn" data-product-id="${item.id}">+</button>
+                            <button class="remove-btn" data-product-id="${item.id}">×</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('')
+
+        // Add event listeners to quantity buttons
+        setTimeout(() => {
+          cartItems.querySelectorAll('.minus-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation()
+              const productId = parseInt(btn.dataset.productId)
+              updateQuantity(productId, cart.find(item => item.id === productId).quantity - 1)
+            })
+          })
+
+          cartItems.querySelectorAll('.plus-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation()
+              const productId = parseInt(btn.dataset.productId)
+              updateQuantity(productId, cart.find(item => item.id === productId).quantity + 1)
+            })
+          })
+
+          // Add event listeners to remove buttons
+          cartItems.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation()
+              const productId = parseInt(btn.dataset.productId)
+              removeFromCart(productId)
+            })
+          })
+        }, 0)
+
+        proceedCheckout.style.display = 'block'
+      }
+    }
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart))
+    }
+
+    function loadCart() {
+      const savedCart = localStorage.getItem('cart')
+      if (savedCart) {
+        cart = JSON.parse(savedCart)
+        updateCartDisplay()
+      }
+    }
+
+    // Cart dropdown functionality
+    document.getElementById('cartIcon').addEventListener('click', function (e) {
+      e.stopPropagation()
+      const dropdown = document.getElementById('cartDropdown')
+      dropdown.classList.toggle('active')
+    })
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.icon-basket') && !e.target.closest('.cart-dropdown')) {
+        document.getElementById('cartDropdown').classList.remove('active')
+      }
+    })
+
+    // Proceed to checkout
+    document.getElementById('proceedCheckout').addEventListener('click', function () {
+      window.location.href = 'checkout.html'
+    })
+
+    // Mobile menu functionality
+    document.getElementById('mobileMenuToggle').addEventListener('click', function () {
+      this.classList.toggle('active')
+      document.getElementById('navLinks').classList.toggle('active')
+    })
+
+    // Navbar scroll behavior
+    let lastScrollTop = 0
+    const navbar = document.getElementById('navbar')
+    const scrollThreshold = 100
+
+    window.addEventListener('scroll', function () {
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
+
+      if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
+        navbar.classList.add('hidden')
+      } else {
+        navbar.classList.remove('hidden')
+      }
+
+      lastScrollTop = currentScrollTop
+    })
+
+    // Filter functionality
+    const filterButtons = document.querySelectorAll('.filter-btn')
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        filterButtons.forEach(btn => btn.classList.remove('active'))
+        button.classList.add('active')
+        // Filter logic can be implemented here
+      })
+    })
+
+    async function loadProducts() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('❌ Error fetching products:', error)
+        return
+      }
+
+      products = data
+      renderProducts()
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid')
+      grid.innerHTML = ''
+
+      products.forEach(p => {
+        const card = document.createElement('div')
+        card.className = 'product-card'
+        card.innerHTML = `
+          <img src="${p.image_url}" alt="${p.product_name}">
+          <div class="product-info">
+            <div class="brand-name">${p.brand_name}</div>
+            <div class="product-title">${p.product_name}</div>
+            <div class="product-price">UGX ${p.price.toLocaleString()}</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        `
+
+        // Add to cart button functionality
+        const addToCartBtn = card.querySelector('.add-to-cart')
+        addToCartBtn.addEventListener('click', (e) => {
+          e.stopPropagation()
+          addToCart(p)
+          addToCartBtn.textContent = 'Added!'
+          setTimeout(() => {
+            addToCartBtn.textContent = 'Add to Cart'
+          }, 1500)
+        })
+
+        // Open expanded modal when card is clicked
+        card.addEventListener('click', (e) => {
+          if (e.target.classList.contains('add-to-cart')) return
+          openExpandedModal(p)
+        })
+
+        grid.appendChild(card)
+      })
+    }
+
+    function openExpandedModal(product) {
+      document.getElementById('expandedProductImage').src = product.image_url
+      document.getElementById('expandedProductTitle').textContent = product.product_name
+      document.getElementById('expandedProductBrand').textContent = product.brand_name
+      document.getElementById('expandedProductDescription').textContent = product.description
+      document.getElementById('expandedProductPrice').textContent = 'UGX ' + product.price.toLocaleString()
+
+      // Populate fragrance notes
+      populateFragranceNotes(product)
+
+      // Generate recommendations
+      generateRecommendations(product.product_name)
+
+      // Show expanded modal
+      document.getElementById('expandedModal').classList.add('active')
+      document.body.style.overflow = 'hidden'
+    }
+
+    function populateFragranceNotes(product) {
+      // Top Notes
+      const topNotesElement = document.getElementById('topNotes')
+      topNotesElement.innerHTML = ''
+      if (product.top_notes && product.top_notes.length > 0) {
+        product.top_notes.forEach(note => {
+          const noteElement = document.createElement('span')
+          noteElement.className = 'note-tag'
+          noteElement.textContent = note
+          topNotesElement.appendChild(noteElement)
+        })
+      }
+
+      // Heart Notes
+      const heartNotesElement = document.getElementById('heartNotes')
+      heartNotesElement.innerHTML = ''
+      if (product.heart_notes && product.heart_notes.length > 0) {
+        product.heart_notes.forEach(note => {
+          const noteElement = document.createElement('span')
+          noteElement.className = 'note-tag'
+          noteElement.textContent = note
+          heartNotesElement.appendChild(noteElement)
+        })
+      }
+
+      // Base Notes
+      const baseNotesElement = document.getElementById('baseNotes')
+      baseNotesElement.innerHTML = ''
+      if (product.base_notes && product.base_notes.length > 0) {
+        product.base_notes.forEach(note => {
+          const noteElement = document.createElement('span')
+          noteElement.className = 'note-tag'
+          noteElement.textContent = note
+          baseNotesElement.appendChild(noteElement)
+        })
+      }
+    }
+
+    function generateRecommendations(currentName) {
+      const grid = document.getElementById('recommendationsGrid')
+      grid.innerHTML = ''
+
+      const others = products.filter(p => p.product_name !== currentName)
+      const picks = others.sort(() => 0.5 - Math.random()).slice(0, 4)
+
+      picks.forEach(p => {
+        const rec = document.createElement('div')
+        rec.className = 'recommendation-card'
+        rec.innerHTML = `
+                <div class="recommendation-image" style="background-image: url('${p.image_url}');"></div>
+                <div class="recommendation-info">
+                    <h4 class="recommendation-title">${p.product_name}</h4>
+                    <p class="recommendation-price">UGX ${p.price.toLocaleString()}</p>
+                </div>
+            `
+        rec.addEventListener('click', () => openExpandedModal(p))
+        grid.appendChild(rec)
+      })
+    }
+
+    // Accordion functionality
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const accordionItem = header.parentElement
+        const content = accordionItem.querySelector('.accordion-content')
+        const icon = accordionItem.querySelector('.accordion-icon')
+
+        accordionItem.classList.toggle('active')
+        content.classList.toggle('active')
+      })
+    })
+
+    // Close expanded modal
+    document.getElementById('expandedModalClose').addEventListener('click', () => {
+      document.getElementById('expandedModal').classList.remove('active')
+      document.body.style.overflow = 'auto'
+    })
+
+    // Close modal when clicking outside
+    document.getElementById('expandedModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('expandedModal')) {
+        document.getElementById('expandedModal').classList.remove('active')
+        document.body.style.overflow = 'auto'
+      }
+    })
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('expandedModal').classList.contains('active')) {
+        document.getElementById('expandedModal').classList.remove('active')
+        document.body.style.overflow = 'auto'
+      }
+    })
+
+    // Add to cart from expanded modal
+    document.getElementById('expandedAddToCart').addEventListener('click', () => {
+      const currentProduct = products.find(p => p.product_name === document.getElementById('expandedProductTitle').textContent)
+      if (currentProduct) {
+        addToCart(currentProduct)
+      }
+    })
+
+    // Pay with Airtel from expanded modal
+    document.getElementById('expandedPayAirtel').addEventListener('click', () => {
+      const currentProduct = products.find(p => p.product_name === document.getElementById('expandedProductTitle').textContent)
+      if (currentProduct) {
+        addToCart(currentProduct)
+        window.location.href = 'checkout.html'
+      }
+    })
+
+    // More Payment Options from expanded modal
+    document.getElementById('morePaymentOptions').addEventListener('click', (e) => {
+      e.preventDefault()
+      const currentProduct = products.find(p => p.product_name === document.getElementById('expandedProductTitle').textContent)
+      if (currentProduct) {
+        addToCart(currentProduct)
+        window.location.href = 'checkout.html'
+      }
+    })
+
+    // Initialize
+    loadCart()
+    loadProducts()
+  </script>
+</body>
+
+</html>

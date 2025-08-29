@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanctuary Scents - Luxury Perfumes & Fragrances</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5dc;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(198, 185, 164, 0.95);
+            padding: 0.5rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(139, 69, 19, 0.2);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .navbar.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem 0 4rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #654321;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #8B4513;
+        }
+
+        .logo-image {
+            height: 140px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #654321;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .nav-links a:hover {
+            color: #4a2c0f;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            position: relative;
+        }
+
+        .icon-basket {
+            display: inline-block;
+            width: 44px;
+            height: 44px;
+            margin-right: 0.25rem;
+            background-image: url('perfumes/shopping basket.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: sepia(1) saturate(4) hue-rotate(350deg) brightness(0.6);
+            vertical-align: middle;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.4),
+                    transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #654321;
+            border: 2px solid #654321;
+            box-shadow:
+                0 4px 15px rgba(101, 67, 33, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline:hover {
+            background: #654321;
+            color: #f5f5dc;
+            transform: translateY(-2px);
+            box-shadow:
+                0 6px 20px rgba(101, 67, 33, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            color: #f5f5dc;
+            box-shadow:
+                0 4px 15px rgba(139, 69, 19, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #654321 0%, #4a2c0f 100%);
+            transform: translateY(-2px);
+            box-shadow:
+                0 6px 20px rgba(139, 69, 19, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Shopping Cart Dropdown */
+        .cart-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .cart-dropdown.active {
+            display: block;
+        }
+
+        .cart-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .cart-items {
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-item-price {
+            color: #8B4513;
+            font-weight: 600;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .quantity-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .cart-empty {
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+        }
+
+        .cart-empty-phrases {
+            font-style: italic;
+            margin-top: 1rem;
+            color: #8B4513;
+        }
+
+        .cart-footer {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .proceed-checkout {
+            background: #654321;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .proceed-checkout:hover {
+            background: #4a2c0f;
+        }
+
+        .remove-btn {
+            background: #e74c3c !important;
+            color: white !important;
+            border: none !important;
+            padding: 0.25rem 0.5rem !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            margin-left: 0.5rem !important;
+            font-weight: bold !important;
+            transition: background 0.3s ease !important;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b !important;
+        }
+
+        .continue-shopping-btn {
+            background: #654321;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .continue-shopping-btn:hover {
+            background: #4a2c0f;
+        }
+
+        .btn-animated {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            box-shadow: 3px 0px 8px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            text-shadow: 2px 0px 4px rgba(0, 0, 0, 0.6), 4px 0px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-animated:hover {
+            background: linear-gradient(-45deg, #A0522D, #8B4513, #f1a85f, #A0522D);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+            transform: translateY(-2px);
+            box-shadow:
+                0 6px 20px rgba(139, 69, 19, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-animated::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .btn-animated:hover::before {
+            left: 100%;
+        }
+
+        .btn-animated:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 6px 20px rgba(139, 69, 19, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+
+
+
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            color: white;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(245, 245, 220, 0.1) 0%, rgba(230, 230, 204, 0.1) 100%), url('perfumes/banner 2.avif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            text-shadow: 4px 0px 8px rgba(0, 0, 0, 0.6), 8px 0px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            line-height: 1.8;
+            text-shadow: 3px 0px 6px rgba(0, 0, 0, 0.5), 6px 0px 9px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            color: #333;
+            font-weight: 300;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 3px solid #8B4513;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Products Section */
+        .products {
+            padding: 6rem 2rem;
+            background: #f5f5dc;
+            color: #333;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-image.smaller {
+            height: 250px;
+            background-size: contain;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(139, 69, 19, 0.2);
+        }
+
+        .product-info {
+            padding: 2rem;
+        }
+
+        .product-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .product-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        /* Dynamic Products Section */
+        .dynamic-products {
+            padding: 6rem 2rem;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .dynamic-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .dynamic-product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+            cursor: pointer;
+        }
+
+        .dynamic-product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .dynamic-product-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .dynamic-product-info {
+            padding: 2rem;
+        }
+
+        .dynamic-product-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .dynamic-product-price {
+            font-size: 1.3rem;
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .dynamic-product-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, rgba(245, 245, 220, 0.1) 0%, rgba(230, 230, 204, 0.1) 100%), url('perfumes/banner 2.avif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #f5f5dc;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(139, 69, 19, 0.8);
+            z-index: -1;
+        }
+
+        .cta .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: #f5f5dc;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(139, 69, 19, 0.2);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-left {
+            color: #f5f5dc;
+        }
+
+        .footer-left p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-left .tagline {
+            font-size: 0.9rem;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 2rem;
+            color: #f5f5dc;
+            flex-wrap: wrap;
+        }
+
+        .social-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Floating WhatsApp Button */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease, opacity 1.5s ease;
+            cursor: pointer;
+        }
+
+        .chat-text {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #654321;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease, opacity 1.5s ease;
+            white-space: nowrap;
+        }
+
+        .chat-text::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            right: 20px;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+        }
+
+        .floating-whatsapp::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: #25D366;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+
+        .whatsapp-icon {
+            width: 30px;
+            height: 30px;
+            background-image: url('perfumes/whatsapp icon.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Quiz styles moved to external quiz page */
+        .no-scroll {
+            overflow: hidden;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #654321;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .logo-image {
+                height: 100px;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(198, 185, 164, 0.95);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                border-top: 1px solid rgba(139, 69, 19, 0.2);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="sanctuary1.html" class="logo">
+                <img src="perfumes/sanctuary scents logo transparent.png" alt="Sanctuary Scents Logo"
+                    class="logo-image">
+            </a>
+            
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="sanctuary1.html" class="active">Home</a></li>
+                <li><a href="shopTest.html">Shop</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <div class="icon-basket" id="cartIcon">
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <a href="checkout.html" class="btn btn-primary">Checkout</a>
+            </div>
+        </div>
+
+        <!-- Shopping Cart Dropdown -->
+        <div class="cart-dropdown" id="cartDropdown">
+            <div class="cart-header">
+                Shopping Cart
+            </div>
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be populated here -->
+            </div>
+            <div class="cart-footer">
+                <button class="proceed-checkout" id="proceedCheckout" style="display: none;">Proceed to Checkout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Discover Your Signature Scent</h1>
+            <p>Explore our curated collection of luxury fragrances and find the perfect scent that tells your story.
+                From floral to woody, we have the fragrance that speaks to your soul.</p>
+            <div class="hero-buttons">
+                <a href="shopTest.html" class="btn btn-animated">Shop Now</a>
+                <a href="quiz.html" class="btn btn-animated" id="openQuizBtn">Take Our Quiz</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Sanctuary Scents?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background-image: url('perfumes/smoking perfume.avif');">
+                    </div>
+                    <h3>Curated Collections</h3>
+                    <p>Expertly selected fragrances from the world's most prestigious perfumers and brands.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="background-image: url('perfumes/hand perfume.avif');">
+                    </div>
+                    <h3>Personalized Experience</h3>
+                    <p>Get personalized recommendations based on your preferences and style.</p>
+                    <div style="margin-top:0.75rem;">
+                        <a href="quiz.html" id="openQuizCard" class="btn btn-outline">Take the Quiz</a>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="background-image: url('perfumes/delivery.avif');">
+                    </div>
+                    <h3>Fast Shipping</h3>
+                    <p>Same-day delivery for products in stock. Lightning-fast delivery with tracking to your door.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="products">
+        <div class="container">
+            <h2 class="section-title">Featured Fragrances</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('perfumes/lattafa nebras box.webp');">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Lattafa Nebras</h3>
+                        <p>A sophisticated oriental fragrance featuring notes of vanilla, amber, and sandalwood. Perfect
+                            for evening wear with its warm, sensual character.</p>
+                        <p class="product-price">UGX 135,000</p>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image smaller"
+                        style="background-image: url('perfumes/lattafa eclaire box.webp');">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Lattafa Eclaire</h3>
+                        <p>An elegant blend of bergamot, jasmine, and white musk. This fresh and modern fragrance offers
+                            a clean, sophisticated scent perfect for daily wear.</p>
+                        <p class="product-price">UGX 145,000</p>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image smaller"
+                        style="background-image: url('perfumes/club de nuit  intense man box.webp');">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Club de Nuit Intense Man</h3>
+                        <p>A powerful masculine fragrance with notes of black currant, bergamot, and birch. Features a
+                            distinctive smoky leather accord that's bold and unforgettable.</p>
+                        <p class="product-price">UGX 165,000</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dynamic Featured Fragrances Section -->
+    <section class="dynamic-products">
+        <div class="container">
+            <h2 class="section-title">Featured Fragrances</h2>
+            <div class="dynamic-products-grid" id="dynamicProductsGrid">
+                <!-- Dynamic products will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Find Your Perfect Scent?</h2>
+            <p>Join thousands of customers who have discovered their signature fragrance with us.</p>
+            <a href="shopTest.html" class="btn btn-primary">Start Your Journey</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <p>&copy; 2024 Sanctuary Scents. All rights reserved.</p>
+                    <p class="tagline">"spray responsibly" - side effects may include obsession!</p>
+                </div>
+                <div class="footer-right">
+                    <div class="social-item">
+                        <span style="font-size: 1.2rem;">👻</span>
+                        <span>sanctuaryscents</span>
+                    </div>
+                    <div class="social-item">
+                        <span style="font-size: 1.2rem;">📷</span>
+                        <span>sanctuary_scents_ug</span>
+                    </div>
+                    <div class="social-item">
+                        <span style="font-size: 1.2rem;">📞</span>
+                        <span>+256 753 610142</span>
+                    </div>
+                    <div class="social-item">
+                        <span style="font-size: 1.2rem;">📞</span>
+                        <span>+254 797 735859</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <div class="chat-text" id="chatText">Chat with us</div>
+    <div class="floating-whatsapp" id="whatsappButton" onclick="window.open('https://wa.me/256753610142', '_blank')">
+        <div class="whatsapp-icon"></div>
+    </div>
+
+
+
+    <script>
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('.navbar');
+        const scrollThreshold = 100;
+
+        window.addEventListener('scroll', function () {
+            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Navbar hide/show logic
+            if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
+                // Scrolling down - hide navbar
+                navbar.classList.add('hidden');
+            } else {
+                // Scrolling up - show navbar
+                navbar.classList.remove('hidden');
+            }
+
+            lastScrollTop = currentScrollTop;
+
+            // WhatsApp button logic
+            const whatsappButton = document.getElementById('whatsappButton');
+            const chatText = document.getElementById('chatText');
+            const featuresSection = document.querySelector('.features');
+
+            if (featuresSection) {
+                const featuresTop = featuresSection.offsetTop;
+                const viewportTop = window.pageYOffset;
+
+                if (viewportTop >= featuresTop) {
+                    whatsappButton.style.opacity = '0';
+                    whatsappButton.style.pointerEvents = 'none';
+                    chatText.style.opacity = '0';
+                    chatText.style.pointerEvents = 'none';
+                } else {
+                    whatsappButton.style.opacity = '1';
+                    whatsappButton.style.pointerEvents = 'auto';
+                    chatText.style.opacity = '1';
+                    chatText.style.pointerEvents = 'auto';
+                }
+            }
+        });
+        // Cart functionality
+        let cart = []
+
+        function addToCart(product) {
+            const existingItem = cart.find(item => item.id === product.id)
+            if (existingItem) {
+                existingItem.quantity += 1
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.product_name,
+                    brand: product.brand_name,
+                    price: product.price,
+                    image: product.image_url,
+                    quantity: 1
+                })
+            }
+            updateCartDisplay()
+            saveCart()
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId)
+            updateCartDisplay()
+            saveCart()
+        }
+
+        function updateQuantity(productId, newQuantity) {
+            if (newQuantity <= 0) {
+                removeFromCart(productId)
+                return
+            }
+            const item = cart.find(item => item.id === productId)
+            if (item) {
+                item.quantity = newQuantity
+                updateCartDisplay()
+                saveCart()
+            }
+        }
+
+        function updateCartDisplay() {
+            const cartCount = document.getElementById('cartCount')
+            const cartItems = document.getElementById('cartItems')
+            const proceedCheckout = document.getElementById('proceedCheckout')
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
+            cartCount.textContent = totalItems
+            
+            if (totalItems === 0) {
+                cartCount.style.display = 'none'
+            } else {
+                cartCount.style.display = 'flex'
+            }
+
+            if (cart.length === 0) {
+                const emptyPhrases = [
+                    "Add some items to your basket to smell sweeter than honey! 🍯",
+                    "Your basket is as empty as a perfume bottle in the desert! 🌵",
+                    "Time to fill your basket with scents that'll make heads turn! ✨",
+                    "Empty basket? Let's change that with some amazing fragrances! 🌸"
+                ]
+                const randomPhrase = emptyPhrases[Math.floor(Math.random() * emptyPhrases.length)]
+                cartItems.innerHTML = `
+                    <div class="cart-empty">
+                        <p>Your basket is empty</p>
+                        <p class="cart-empty-phrases">${randomPhrase}</p>
+                        <button class="continue-shopping-btn" onclick="document.getElementById('cartDropdown').classList.remove('active')">Continue Shopping</button>
+                    </div>
+                `
+                proceedCheckout.style.display = 'none'
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item" data-product-id="${item.id}">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">UGX ${item.price.toLocaleString()}</div>
+                            <div class="cart-item-quantity">
+                                <button class="quantity-btn minus-btn" data-product-id="${item.id}">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="quantity-btn plus-btn" data-product-id="${item.id}">+</button>
+                                <button class="remove-btn" data-product-id="${item.id}">×</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')
+                
+                // Add event listeners to quantity buttons
+                setTimeout(() => {
+                    cartItems.querySelectorAll('.minus-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation()
+                            const productId = parseInt(btn.dataset.productId)
+                            updateQuantity(productId, cart.find(item => item.id === productId).quantity - 1)
+                        })
+                    })
+                    
+                    cartItems.querySelectorAll('.plus-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation()
+                            const productId = parseInt(btn.dataset.productId)
+                            updateQuantity(productId, cart.find(item => item.id === productId).quantity + 1)
+                        })
+                    })
+
+                    // Add event listeners to remove buttons
+                    cartItems.querySelectorAll('.remove-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation()
+                            const productId = parseInt(btn.dataset.productId)
+                            removeFromCart(productId)
+                        })
+                    })
+                }, 0)
+                
+                proceedCheckout.style.display = 'block'
+            }
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart))
+        }
+
+        function loadCart() {
+            const savedCart = localStorage.getItem('cart')
+            if (savedCart) {
+                cart = JSON.parse(savedCart)
+                updateCartDisplay()
+            }
+        }
+
+        // Cart dropdown functionality
+        document.getElementById('cartIcon').addEventListener('click', function(e) {
+            e.stopPropagation()
+            const dropdown = document.getElementById('cartDropdown')
+            dropdown.classList.toggle('active')
+        })
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.icon-basket') && !e.target.closest('.cart-dropdown')) {
+                document.getElementById('cartDropdown').classList.remove('active')
+            }
+        })
+
+        // Proceed to checkout
+        document.getElementById('proceedCheckout').addEventListener('click', function() {
+            window.location.href = 'checkout.html'
+        })
+
+        // Mobile menu functionality
+        document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+            this.classList.toggle('active')
+            document.getElementById('navLinks').classList.toggle('active')
+        })
+
+        // Initialize cart
+        loadCart()
+
+        // Load dynamic featured products
+        async function loadDynamicProducts() {
+            try {
+                const response = await fetch('shopTest.html')
+                const html = await response.text()
+                
+                // Create a temporary DOM element to parse the HTML
+                const parser = new DOMParser()
+                const doc = parser.parseFromString(html, 'text/html')
+                
+                // Extract product data from the script tag
+                const scriptContent = doc.querySelector('script[type="module"]')
+                if (scriptContent) {
+                    // Find the products array in the script content
+                    const scriptText = scriptContent.textContent
+                    const productsMatch = scriptText.match(/const products = (\[.*?\])/s)
+                    
+                    if (productsMatch) {
+                        try {
+                            // Extract the products array and parse it
+                            const productsText = productsMatch[1]
+                            const products = JSON.parse(productsText)
+                            
+                            // Select 3 random products
+                            const shuffled = products.sort(() => 0.5 - Math.random())
+                            const selectedProducts = shuffled.slice(0, 3)
+                            
+                            // Render the products
+                            renderDynamicProducts(selectedProducts)
+                        } catch (e) {
+                            console.error('Error parsing products:', e)
+                            // Fallback to static products if parsing fails
+                            renderFallbackProducts()
+                        }
+                    } else {
+                        renderFallbackProducts()
+                    }
+                } else {
+                    renderFallbackProducts()
+                }
+            } catch (error) {
+                console.error('Error loading dynamic products:', error)
+                renderFallbackProducts()
+            }
+        }
+
+        function renderDynamicProducts(products) {
+            const grid = document.getElementById('dynamicProductsGrid')
+            if (!grid) return
+            
+            grid.innerHTML = products.map(product => `
+                <div class="dynamic-product-card" onclick="window.location.href='shopTest.html'">
+                    <div class="dynamic-product-image" style="background-image: url('${product.image_url}');"></div>
+                    <div class="dynamic-product-info">
+                        <h3 class="dynamic-product-title">${product.product_name}</h3>
+                        <p>${product.description || 'A luxurious fragrance that captures the essence of sophistication and elegance.'}</p>
+                        <p class="dynamic-product-price">UGX ${product.price.toLocaleString()}</p>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        function renderFallbackProducts() {
+            const grid = document.getElementById('dynamicProductsGrid')
+            if (!grid) return
+            
+            grid.innerHTML = `
+                <div class="dynamic-product-card" onclick="window.location.href='shopTest.html'">
+                    <div class="dynamic-product-image" style="background-image: url('perfumes/lattafa nebras box.webp');"></div>
+                    <div class="dynamic-product-info">
+                        <h3 class="dynamic-product-title">Lattafa Nebras</h3>
+                        <p>A sophisticated oriental fragrance featuring notes of vanilla, amber, and sandalwood.</p>
+                        <p class="dynamic-product-price">UGX 135,000</p>
+                    </div>
+                </div>
+                <div class="dynamic-product-card" onclick="window.location.href='shopTest.html'">
+                    <div class="dynamic-product-image" style="background-image: url('perfumes/lattafa eclaire box.webp');"></div>
+                    <div class="dynamic-product-info">
+                        <h3 class="dynamic-product-title">Lattafa Eclaire</h3>
+                        <p>An elegant blend of bergamot, jasmine, and white musk for daily wear.</p>
+                        <p class="dynamic-product-price">UGX 145,000</p>
+                    </div>
+                </div>
+                <div class="dynamic-product-card" onclick="window.location.href='shopTest.html'">
+                    <div class="dynamic-product-image" style="background-image: url('perfumes/club de nuit  intense man box.webp');"></div>
+                    <div class="dynamic-product-info">
+                        <h3 class="dynamic-product-title">Club de Nuit Intense Man</h3>
+                        <p>A powerful masculine fragrance with distinctive smoky leather accord.</p>
+                        <p class="dynamic-product-price">UGX 165,000</p>
+                    </div>
+                </div>
+            `
+        }
+
+        // Load dynamic products when page loads
+        loadDynamicProducts()
+
+        // Quiz Logic
+        (function () {
+            const overlay = null;
+            const questionEl = null;
+            const optionsEl = null;
+            const progressEl = null;
+            const openQuizBtn = document.getElementById('openQuizBtn');
+            const openQuizCard = document.getElementById('openQuizCard');
+            const closeBtn = document.getElementById('quizClose');
+
+            const steps = [
+                {
+                    id: 'gender', question: 'What type of fragrance are you looking for?', options: [
+                        { key: 'masculine', title: 'Masculine', desc: 'Fragrances crafted with bold, refined character' },
+                        { key: 'feminine', title: 'Feminine', desc: 'Fragrances with elegance, softness and grace' }]
+                },
+                {
+                    id: 'masculine_style', dependsOn: { id: 'gender', value: 'masculine' }, question: 'Which types of scents do you typically gravitate towards?', options: [
+                        { key: 'sophisticated', title: 'Sophisticated', desc: 'Multifaceted compositions that are perfectly balanced. Creamy gourmand notes with textured spices & woods.' },
+                        { key: 'sporty', title: 'Sporty', desc: 'Easy-going, clean fragrances. Bright and light scents that evoke fresh masculinity.' }]
+                },
+                {
+                    id: 'masculine_sophisticated_depth', dependsOn: { id: 'masculine_style', value: 'sophisticated' }, question: 'Do you prefer darker, richer moods or lighter, subtle freshness?', options: [
+                        { key: 'dark', title: 'Dark', desc: 'Rich, mysterious scents with mood. Distinct personality that commands attention.' },
+                        { key: 'light', title: 'Light', desc: 'Subtle, fresh, comfortable scents that embody relaxation and lightness.' }]
+                },
+                {
+                    id: 'masculine_sporty_vibe', dependsOn: { id: 'masculine_style', value: 'sporty' }, question: 'Which vibe are you going for?', options: [
+                        { key: 'sensual', title: 'Sensual', desc: 'Warm, sweet scents with depth. Rich spices and creamy woods wrapped in elegant sweetness.' },
+                        { key: 'clean', title: 'Clean', desc: 'Crisp, energizing scents with aromatic herbs, sparkling citrus and aquatic notes.' }]
+                },
+                {
+                    id: 'final_feel', question: 'How do you want your scent to make you feel?', options: [
+                        { key: 'easy', title: 'Easy going & casual' },
+                        { key: 'sophisticated', title: 'Sophisticated & sensual' },
+                        { key: 'adventurous', title: 'Outgoing & adventurous' },
+                        { key: 'fresh', title: 'Fresh & clean' },
+                        { key: 'classic', title: 'Classic & timeless' }]
+                }
+            ];
+
+            const state = {};
+            function getNextIndex(currentIndex) {
+                for (let i = currentIndex + 1; i < steps.length; i++) {
+                    const s = steps[i];
+                    if (!s.dependsOn) return i;
+                    const depVal = state[s.dependsOn.id];
+                    if (depVal === s.dependsOn.value) return i;
+                }
+                return -1;
+            }
+            function getFirstIndex() { return 0; }
+            function countRemaining(fromIndex) {
+                let count = 1; let current = fromIndex;
+                while (true) { const next = getNextIndex(current); if (next === -1) break; count++; current = next; }
+                return count;
+            }
+            function openQuiz() { window.location.href = 'quiz.html'; }
+            const safe = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
+            safe(document.getElementById('openQuizBtn'), 'click', (e) => { e.preventDefault(); openQuiz(); });
+            safe(document.getElementById('openQuizCard'), 'click', (e) => { e.preventDefault(); openQuiz(); });
+        })();
+
+    </script>
+</body>
+
+</html>
