@@ -175,15 +175,11 @@
             }
 
             .recommendations-grid {
-                flex-direction: column;
-                align-items: center;
-                gap: 1.5rem;
+                grid-template-columns: 1fr;
             }
 
             .recommendation-card {
-                margin: 0;
-                flex: 0 0 auto;
-                max-width: 280px;
+                max-width: 320px;
             }
 
             .recommendation-image {
@@ -192,6 +188,12 @@
 
             .recommendation-image.smaller {
                 height: 180px;
+            }
+        }
+
+        @media (min-width: 761px) and (max-width: 1024px) {
+            .recommendations-grid {
+                grid-template-columns: repeat(2, minmax(240px, 1fr));
             }
         }
 
@@ -241,11 +243,12 @@
 
         /* Product card styling for recommendations */
         .recommendations-grid {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(240px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
-            flex-wrap: wrap;
+            justify-items: center;
+            align-items: stretch;
         }
 
         .recommendation-card {
@@ -256,8 +259,8 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid rgba(139, 69, 19, 0.1);
             cursor: pointer;
-            flex: 0 0 250px;
-            max-width: 250px;
+            width: 100%;
+            max-width: 280px;
         }
 
         .recommendation-card:hover {
@@ -346,6 +349,52 @@
             background: #4a2c0f;
             transform: translateY(-2px);
         }
+
+        /* Make final profile box responsive */
+#opts > div:first-child {
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Responsive recommendations grid */
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  justify-items: center;
+}
+
+.recommendation-card {
+  width: 100%;
+  max-width: 100%;
+}
+
+.recommendation-image {
+  height: auto;
+  aspect-ratio: 1 / 1; /* keeps square proportion */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .recommendations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .recommendation-card {
+    max-width: 100%;
+  }
+}
+
+/* Desktop: 3 columns */
+@media (min-width: 1025px) {
+  .recommendations-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
     </style>
 </head>
 
@@ -353,7 +402,7 @@
     <main class="page">
         <section class="card" role="dialog" aria-modal="true" aria-labelledby="q">
             <div class="topbar">
-                <a href="Sanctuary1.html" class="brand">
+                <a href="index.html" class="brand">
                     <img src="perfumes/sanctuary scents logo transparent.png" alt="Sanctuary Scents" />
                     <span>Sanctuary Scents</span>
                 </a>
@@ -377,7 +426,13 @@
         <div class="whatsapp-icon"></div>
     </div>
 
-    <script>
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+        const supabaseUrl = 'https://ptnffxklbwkgzbsegtmr.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0bmZmeGtsYndrZ3pic2VndG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYwNTI1NjksImV4cCI6MjA3MTYyODU2OX0.mEWq1X_0EGxSwd9Xf6BFAMLK9e_nDkA33ZIgKoDihLs'
+        const supabase = createClient(supabaseUrl, supabaseKey)
+
         const steps = [
             {
                 id: 'gender',
@@ -562,125 +617,21 @@
         // WhatsApp
         (function () { function openWhatsApp() { const phone = '256753610142'; window.open(`https://wa.me/${phone}`, '_blank'); } const b = document.getElementById('whatsappButton'); const t = document.getElementById('chatText'); if (b) b.addEventListener('click', openWhatsApp); if (t) t.addEventListener('click', openWhatsApp); })();
 
-        // Product data for recommendations
-        const productData = {
-            'Lattafa Nebras': {
-                brand: 'Lattafa',
-                description: 'A sophisticated oriental fragrance featuring notes of vanilla, amber, and sandalwood. Perfect for evening wear with its warm, sensual character that creates an aura of mystery and elegance.',
-                topNotes: ['Vanilla', 'Amber', 'Sandalwood'],
-                heartNotes: ['Musk', 'Patchouli'],
-                baseNotes: ['Tonka Bean', 'Oriental Notes'],
-                price: 'UGX 135,000',
-                image: 'perfumes/lattafa nebras box.webp'
-            },
-            'Lattafa Eclaire': {
-                brand: 'Lattafa',
-                description: 'An elegant blend of bergamot, jasmine, and white musk. This fresh and modern fragrance offers a clean, sophisticated scent perfect for daily wear.',
-                topNotes: ['Bergamot', 'Jasmine'],
-                heartNotes: ['White Musk', 'Lily of the Valley'],
-                baseNotes: ['Peony', 'Cedar'],
-                price: 'UGX 145,000',
-                image: 'perfumes/lattafa eclaire box.webp'
-            },
-            'Club de Nuit Intense Man': {
-                brand: 'Club de Nuit',
-                description: 'A powerful masculine fragrance with notes of black currant, bergamot, and birch. Features a distinctive smoky leather accord that\'s bold and unforgettable.',
-                topNotes: ['Pineapple', 'Pink Pepper', 'Black Pepper', 'Lime', 'Lemon', 'Bergamot'],
-                heartNotes: ['Rose', 'Lily of the Valley', 'Freesia', 'Jasmine'],
-                baseNotes: ['Leather', 'Cedarwood', 'Patchouli', 'Ambergris', 'White Musk', 'Ambroxan'],
-                price: 'UGX 165,000',
-                image: 'perfumes/club de nuit intense man box.webp'
-            },
-            'Club de Nuit Maleka': {
-                brand: 'Club de Nuit',
-                description: 'An elegant and refined fragrance for the sophisticated woman. Features delicate floral notes with a modern twist, perfect for both day and evening wear.',
-                topNotes: ['Bergamot', 'Pink Pepper', 'Lemon'],
-                heartNotes: ['Rose', 'Jasmine', 'Peony', 'Freesia'],
-                baseNotes: ['White Musk', 'Amber', 'Vanilla', 'Sandalwood'],
-                price: 'UGX 165,000',
-                image: 'perfumes/club de nuit maleka bottle.jpg'
-            },
-            'Lattafa Atlas': {
-                brand: 'Lattafa',
-                description: 'A unique and sophisticated fragrance with distinctive character. Combines oriental and woody notes for a memorable scent that stands out.',
-                topNotes: ['Bergamot', 'Saffron', 'Pink Pepper'],
-                heartNotes: ['Oud', 'Amber', 'Rose'],
-                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
-                price: 'UGX 150,000',
-                image: 'perfumes/lattafa atlas bottle.jpg'
-            },
-            'Mousuf Pink': {
-                brand: 'Mousuf',
-                description: 'A delicate and feminine fragrance with soft, romantic notes. Perfect for daily wear with its gentle, uplifting character that brings joy and elegance.',
-                topNotes: ['Peach', 'Strawberry', 'Bergamot'],
-                heartNotes: ['Rose', 'Jasmine', 'Peony'],
-                baseNotes: ['Vanilla', 'White Musk', 'Sandalwood'],
-                price: 'UGX 100,000',
-                image: 'perfumes/mousuf pink bottle.jpg'
-            },
-            'Mousuf Brown': {
-                brand: 'Mousuf',
-                description: 'A rich and sophisticated masculine fragrance with deep, warm notes. Ideal for evening wear and special occasions with its commanding presence.',
-                topNotes: ['Bergamot', 'Lavender', 'Pink Pepper'],
-                heartNotes: ['Amber', 'Vanilla', 'Rose'],
-                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
-                price: 'UGX 100,000',
-                image: 'perfumes/mousuf and brown.webp'
-            },
-            'Club de Nuit Woman': {
-                brand: 'Club de Nuit',
-                description: 'A sophisticated and alluring fragrance for the modern woman. Combines classic elegance with contemporary appeal for a timeless scent.',
-                topNotes: ['Peach', 'Bergamot', 'Pink Pepper'],
-                heartNotes: ['Rose', 'Jasmine', 'Freesia'],
-                baseNotes: ['Amber', 'Vanilla', 'Musk', 'Sandalwood'],
-                price: 'UGX 165,000',
-                image: 'perfumes/club de nuit woman bottle.jpg'
-            },
-            'Club de Nuit Imperiale': {
-                brand: 'Club de Nuit',
-                description: 'A regal and commanding fragrance with imperial elegance. Perfect for those who appreciate luxury and sophistication with its noble character.',
-                topNotes: ['Bergamot', 'Pink Pepper', 'Lemon'],
-                heartNotes: ['Rose', 'Oud', 'Amber'],
-                baseNotes: ['Sandalwood', 'Musk', 'Patchouli'],
-                price: 'UGX 170,000',
-                image: 'perfumes/club de nuit imperiale bottle.jpg'
-            },
-            'Afnan 9PM Rebel': {
-                brand: 'Afnan',
-                description: 'A bold and rebellious fragrance with intense character and deep notes. Perfect for those who want to make a statement with their scent.',
-                topNotes: ['Black Pepper', 'Bergamot', 'Pink Pepper'],
-                heartNotes: ['Lavender', 'Amber', 'Rose'],
-                baseNotes: ['Musk', 'Vanilla', 'Sandalwood'],
-                price: 'UGX 185,000',
-                image: 'perfumes/afnan 9pm rebel bottle.jpg'
-            },
-            'Afnan 9PM': {
-                brand: 'Afnan',
-                description: 'A sophisticated evening fragrance with deep, rich notes for special occasions. Elegant and timeless with its refined character.',
-                topNotes: ['Bergamot', 'Lavender', 'Pink Pepper'],
-                heartNotes: ['Amber', 'Rose', 'Jasmine'],
-                baseNotes: ['Vanilla', 'Musk', 'Sandalwood'],
-                price: 'UGX 150,000',
-                image: 'perfumes/afnan 9pm bottle.jpg'
-            },
-            'Lattafa Yara': {
-                brand: 'Lattafa',
-                description: 'A delicate and feminine fragrance with floral elegance and grace. Perfect for daily wear with its soft, romantic character.',
-                topNotes: ['Peach', 'Strawberry', 'Bergamot'],
-                heartNotes: ['Rose', 'Jasmine', 'Peony'],
-                baseNotes: ['Vanilla', 'White Musk', 'Sandalwood'],
-                price: 'UGX 120,000',
-                image: 'perfumes/lattafa yara bottle.jpg'
+        // Load products from Supabase
+        async function loadShopProducts() {
+            const { data, error } = await supabase
+                .from('products')
+                .select('*')
+                .order('created_at', { ascending: false })
+            if (error) {
+                console.error('❌ Error fetching products:', error)
+                return []
             }
-        };
-
-        // Build scent profile and map to shop products
-        function loadShopProducts() {
-            return productData;
+            return data || []
         }
 
-        function showResults() {
-            const products = loadShopProducts();
+        async function showResults() {
+            const products = await loadShopProducts();
             // Derive accords from path based on gender
             const accords = [];
 
@@ -707,13 +658,23 @@
                 if (state.soft) accords.push('sweet', 'comforting', 'gentle');
             }
 
-            // Score products by overlapping notes -> simple heuristic
-            const scored = Object.keys(products).map(name => {
-                const p = products[name];
-                const notes = (p.topNotes || []).concat(p.heartNotes || []).concat(p.baseNotes || []).map(n => n.toLowerCase());
-                const score = accords.reduce((s, a) => s + notes.some(n => n.includes(a)) ? 1 : 0, 0);
-                return { name, score, price: p.price, product: p };
-            }).sort((a, b) => b.score - a.score).slice(0, 3);
+            // Score products by overlapping notes and gender/type match
+            const scored = products.map(p => {
+                const top = Array.isArray(p.top_notes) ? p.top_notes : (typeof p.top_notes === 'string' ? p.top_notes.split(',') : [])
+                const heart = Array.isArray(p.heart_notes) ? p.heart_notes : (typeof p.heart_notes === 'string' ? p.heart_notes.split(',') : [])
+                const base = Array.isArray(p.base_notes) ? p.base_notes : (typeof p.base_notes === 'string' ? p.base_notes.split(',') : [])
+                const notes = top.concat(heart).concat(base).map(n => String(n).toLowerCase().trim());
+
+                let score = 0
+                accords.forEach(a => { if (notes.some(n => n.includes(a))) score += 1 })
+
+                // Type bonus: M/F/U
+                const type = (p.type || '').toUpperCase()
+                if (state.gender === 'masculine' && (type === 'M' || type === 'U')) score += 1
+                if (state.gender === 'feminine' && (type === 'F' || type === 'U')) score += 1
+
+                return { score, product: p }
+            }).sort((a, b) => b.score - a.score).slice(0, 3)
 
             // Render results with scent profile
             qEl.textContent = 'Your Scent Profile';
@@ -753,22 +714,22 @@
                 card.className = 'recommendation-card';
 
                 // Determine if image should use smaller sizing
-                const imageClass = (product.name === 'Lattafa Eclaire' || product.name === 'Club de Nuit Intense Man') ? 'recommendation-image smaller' : 'recommendation-image';
+                const imageClass = 'recommendation-image';
 
                 card.innerHTML = `
-                    <div class="${imageClass}" style="background-image: url('${product.image}')"></div>
+                    <div class="${imageClass}" style="background-image: url('${product.image_url}')"></div>
                     <div class="recommendation-info">
-                        <div class="recommendation-brand">${product.brand}</div>
-                        <div class="recommendation-title">${product.name}</div>
-                        <div class="recommendation-price">${product.price}</div>
-                        <div class="recommendation-description">${product.description}</div>
-                        <a href="shop.html" class="view-in-shop">View in Shop</a>
+                        <div class="recommendation-brand">${product.brand_name || ''}</div>
+                        <div class="recommendation-title">${product.product_name}</div>
+                        <div class="recommendation-price">UGX ${Number(product.price || 0).toLocaleString()}</div>
+                        <div class="recommendation-description">${product.description || ''}</div>
+                        <a href="shopTest.html" class="view-in-shop">View in Shop</a>
                     </div>
                 `;
 
                 // Make the entire card clickable to redirect to shop
                 card.addEventListener('click', () => {
-                    window.location.href = 'shop.html';
+                    window.location.href = 'shopTest.html';
                 });
 
                 recsGrid.appendChild(card);
